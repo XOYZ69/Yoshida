@@ -1,12 +1,17 @@
 # This script shows an example how to use the Software
 
+import json
+
 from modules.Card import Card
 
-c = Card('gamecard_simple')
-c.create(
-    {
-        'setname': 'Game Cards',
-        "var_background": "RED"
-    }
-)
-c.show()
+cards = []
+
+with open('data/example_cards.json', 'r', encoding='utf-8') as example:
+    example_json = json.loads(example.read())
+    for card in example_json['cards']:
+        print(card)
+        cards.append(Card(example_json['design']))
+        cards[-1].create(card)
+    
+    for card in cards:
+        card.show()

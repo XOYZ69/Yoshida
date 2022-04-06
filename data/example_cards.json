@@ -1,0 +1,15 @@
+{
+    "design":   "gamecard_simple",
+    "setname":  "GameCards",
+    "cards": [
+        {
+            "var_background": "#FF0000"
+        },
+        {
+            "var_background": "#00FF00"
+        },
+        {
+            "var_background": "#0000FF"
+        }
+    ]
+}
