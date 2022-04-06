@@ -1,0 +1,21 @@
+{
+    "setname": "Set-Name",
+    "width":    1180,
+    "height":   1720,
+    "body": [
+        {
+            "type":             "rectangle",
+            "desc":             "Background",
+            "x":                0,
+            "y":                0,
+            "height":           "100%",
+            "width":            "100%",
+            "border_radius":    5,
+            "color":           "$var_background"
+        }
+    ],
+    "var_background":   "#FFFFFF",
+    "var_title":        "Card Title",
+    "var_author":       "Card Author",
+    "var_id":           "Card ID"
+}
