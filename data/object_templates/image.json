@@ -1,0 +1,10 @@
+{
+    "type":             "image",
+    "desc":             "Some Image",
+    "x":                0,
+    "y":                "0%",
+    "height":           50,
+    "width":            50,
+    "anchor":           "lt",
+    "image_path":       "data/example/gamecard_simple/icons8-google-scholar-512.png"
+}

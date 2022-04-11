@@ -1,0 +1,14 @@
+{
+    "type":             "text",
+    "desc":             "Text",
+    "x":                0,
+    "y":                "0%",
+    "color":            "#000000",
+    "text":             "Some Text",
+    "align":            "center",
+    "font":             "secrcode",
+    "font_size":        50,
+    "anchor":           "mb",
+    "spacing":          15,
+    "padding":          50
+}
