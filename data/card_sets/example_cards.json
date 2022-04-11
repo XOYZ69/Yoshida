@@ -8,12 +8,6 @@
             "var_border_color": "#FF0000",
             "var_border_width": 25,
             "var_text":         "This is some card text to test multiline displayed text. If you wanna create multliline text just type long text or use \\n."
-        },
-        {
-            "var_border_color": "#00FF00"
-        },
-        {
-            "var_border_color": "#0000FF"
         }
     ]
 }

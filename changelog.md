@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.2.1-alpha
+    • Added
+        • Advanced Formulas
+            • use any kind of formulas: (! / % / int / float)
+                • requires '&' at the beginning of the string
+            • old and simpler variant still supported
+
 ## v0.2.0-alpha
     • Added
         • Objects:
@@ -12,7 +19,11 @@
             • Images
                 • Custom image paths
                 • Custom pixel placing and width
-                • Anchor:
+                • Align
+                    • center
+                    • left
+                    • right
+                • Anchor Calculation:
                     • lt = Left Top
                     • mm = Middle Middle
                     • rb = Right Bottom

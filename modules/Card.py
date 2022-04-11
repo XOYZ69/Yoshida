@@ -76,23 +76,67 @@ class Card:
 
         # Enable custom definition usage
         for value in object:
-            if isinstance(object[value], str) and '%' in object[value]:
-                # Check if the percentage is from wdith or height
-                if value in ['x', 'width']:
-                    object[value] = (int(object[value].replace('%', '')) / 100) * self.card_img.width
-                elif value in ['y', 'height']:
-                    object[value] = (int(object[value].replace('%', '')) / 100) * self.card_img.height
-            
-            # Handle Variables defined by '$' at the beginning
-            if isinstance(object[value], str) and object[value][0] == '$':
-                object[value] = self.card_design[object[value][1:]]
+            if isinstance(object[value], str):
+                # Build formula if starts with &
+                if object[value][0] == '&':
+                    object[value] = object[value][1:]
+                    cache_formula = ''
 
-            # Reverse Pixel Definition (Can't explain it. it Works)
-            if isinstance(object[value], str) and object[value][0] == '!':
-                if value in ['x', 'width']:
-                    object[value] = self.card_img.width - int(object[value].replace('!', ''))
-                elif value in ['y', 'height']:
-                    object[value] = self.card_img.height - int(object[value].replace('!', ''))
+                    for item in object[value].split(' '):
+                        cache_item = item
+
+                        # Handle Variables defined by '$'
+                        if item[0] == '$':
+                            cache_item = str(self.card_design[item[1:]]) + ' '
+
+                        # Check if the percentage is from wdith or height
+                        if item[0] == '%':
+                            if value in ['x', 'width']:
+                                cache_item = (float(item.replace('%', '')) / 100) * self.card_img.width
+                            elif value in ['y', 'height']:
+                                cache_item = (float(item.replace('%', '')) / 100) * self.card_img.height
+                        elif 'w_%' in item:
+                            cache_item = (float(item.replace('w_%', '')) / 100) * self.card_img.width
+                        elif 'w_%' in item:
+                            cache_item = (float(item.replace('h_%', '')) / 100) * self.card_img.height
+
+                        # Reverse Pixel Definition (Can't explain it. it Works)
+                        if item[0] == '!':
+                            if value in ['x', 'width']:
+                                cache_item = self.card_img.width - float(item.replace('!', ''))
+                            elif value in ['y', 'height']:
+                                cache_item = self.card_img.height - float(item.replace('!', ''))
+                        elif 'w_!' in item:
+                            cache_item = self.card_img.width - float(item.replace('w_!', ''))
+                        elif 'h_!' in item:
+                            cache_item = self.card_img.width - float(item.replace('h_!', ''))
+
+                        cache_formula += str(cache_item) + ' '
+                    
+                    self.log(cache_formula)
+                    formula_output = eval(cache_formula)
+                    self.log(formula_output)
+                    self.log(int(formula_output))
+                else:
+                    # Support old handling if string is not defined as a formula
+
+                    if isinstance(object[value], str) and '%' in object[value]:
+                        # Check if the percentage is from wdith or height
+                        if value in ['x', 'width']:
+                            object[value] = (int(object[value].replace('%', '')) / 100) * self.card_img.width
+                        elif value in ['y', 'height']:
+                            object[value] = (int(object[value].replace('%', '')) / 100) * self.card_img.height
+                    
+                    # Handle Variables defined by '$' at the beginning
+                    if isinstance(object[value], str) and object[value][0] == '$':
+                        object[value] = self.card_design[object[value][1:]]
+
+                    # Reverse Pixel Definition (Can't explain it. it Works)
+                    if isinstance(object[value], str) and object[value][0] == '!':
+                        if value in ['x', 'width']:
+                            object[value] = self.card_img.width - int(object[value].replace('!', ''))
+                        elif value in ['y', 'height']:
+                            object[value] = self.card_img.height - int(object[value].replace('!', ''))
 
         # Draw Rectangles
         if object['type'] == 'rectangle':
@@ -243,3 +287,6 @@ class Card:
                 true_return += '\n'
 
         return true_return
+    
+    def log(self, text):
+        print('Log:', text)
