@@ -6,5 +6,6 @@
     "height":           0,
     "width":            "0%",
     "border_radius":    0,
-    "color":            "#FFFFFF"
+    "color":            "#FFFFFF",
+    "logic":            null
 }

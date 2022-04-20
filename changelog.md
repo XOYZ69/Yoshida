@@ -1,5 +1,17 @@
 # Changelog
 
+## v0.3.0
+    • Added
+        • Using '<<' at the beginning enables string builder
+            • Use '&' to split values and combine variables
+            • You can have a look at 'data/card_designs/yu-gi-oh_tct.json' for an example
+        • Added the 'logic' key to objects
+            • Can be used for 'FOR' or 'IF' statements
+            • untested and not guarenteed to function correctly
+            
+    • Changed
+        • Formulas are now defined by '>>' at the beginning
+
 ## v0.2.1-alpha
     • Added
         • Advanced Formulas

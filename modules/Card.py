@@ -2,6 +2,8 @@ import os
 import json
 
 from PIL import Image, ImageDraw, ImageFont
+from colorama import Fore
+from numpy import int_, var
 
 class Card:
 
@@ -58,28 +60,65 @@ class Card:
 
         # Draw Card Design
         for object in self.card_design['body']:
-            self.place_object(object)
+            object = self.validate_object(object)
+            self.build_object(object)
 
-    def place_object(self, object):
+    def validate_object(self, object_cache):
+        object = object_cache
 
         # Check Templates for missing parameters
         if object['type'] + '.json' in os.listdir(self.folders['template']):
             with open(self.folders['template'] + '/' + object['type'] + '.json', 'r', encoding='utf-8') as file:
                 # Load json file
-                template = json.loads(file.read())
+                self.template = json.loads(file.read())
 
                 # Go through every paramter
-                for template_parameter in template:
+                for template_parameter in self.template:
                     if template_parameter not in object or object[template_parameter] is None:
                         # Set the parameter to default value to avoid errors
-                        object[template_parameter] = template[template_parameter]
+                        object[template_parameter] = self.template[template_parameter]
+        
+        return object
+    
+    def build_object(self, object):
 
+        if object['logic'] is None or object['logic'] == '':
+            self.format_values(object)
+
+        else:
+            cache = object['logic'].split('#')
+
+            if cache[0] == 'FOR':
+                # Syntax: 'FOR#$var_name#int_from#int_to[#int_steps]'
+                
+                # Remove the $ to get the variable name
+                variable = cache[1][1:]
+
+                if variable not in object:
+                    object[variable] = int(cache[2])
+                
+                int_from  = int(cache[2])
+                int_to    = int(cache[3])
+
+                if len(cache) > 4:
+                    int_steps = int(cache[4])
+                else:
+                    int_steps = 1
+
+                for object[variable] in range(int_from, int_to, int_steps):
+                    self.format_values(object)
+            
+            elif cache[0] == 'IF':
+                pass
+
+    def format_values(self, object):
+        
         # Enable custom definition usage
         for value in object:
             if isinstance(object[value], str):
-                # Build formula if starts with &
-                if object[value][0] == '&':
-                    object[value] = object[value][1:]
+                # Build formula if starts with >>
+                if object[value][0:2] == '>>':
+                    object[value] = object[value][2:]
                     cache_formula = ''
 
                     for item in object[value].split(' '):
@@ -90,7 +129,7 @@ class Card:
                             cache_item = str(self.card_design[item[1:]]) + ' '
 
                         # Check if the percentage is from wdith or height
-                        if item[0] == '%':
+                        if item[-1] == '%':
                             if value in ['x', 'width']:
                                 cache_item = (float(item.replace('%', '')) / 100) * self.card_img.width
                             elif value in ['y', 'height']:
@@ -117,6 +156,22 @@ class Card:
                     formula_output = eval(cache_formula)
                     self.log(formula_output)
                     self.log(int(formula_output))
+                
+                # String Builder
+                elif object[value][0:2] == '<<':
+                    cache = object[value][2:].split('&')
+
+                    cache_out = ''
+
+                    for string_value in cache:
+                        if string_value[0] == '$':
+                            cache_out += self.card_infos[string_value[1:]]
+                        else:
+                            cache_out += string_value
+                    
+                    object[value] = cache_out
+
+                    print(Fore.LIGHTRED_EX + '<<', object[value], Fore.RESET)
                 else:
                     # Support old handling if string is not defined as a formula
 
@@ -137,6 +192,12 @@ class Card:
                             object[value] = self.card_img.width - int(object[value].replace('!', ''))
                         elif value in ['y', 'height']:
                             object[value] = self.card_img.height - int(object[value].replace('!', ''))
+                
+
+        self.place_object(object)
+
+
+    def place_object(self, object):
 
         # Draw Rectangles
         if object['type'] == 'rectangle':
@@ -183,7 +244,7 @@ class Card:
             # Check if the desired image exists
             if not os.path.exists(object['image_path']):
                 # Correct the image_path to the default
-                object['image_path'] = template['image_path']
+                object['image_path'] = self.template['image_path']
             
             # Create new image instance
             new_image = Image.open(object['image_path'])
@@ -225,6 +286,8 @@ class Card:
             
             if self.card_infos_missing != []:
                 print('Missing:', self.card_infos_missing)
+        
+        self.card_infos['var_true_path'] = self.true_path
     
     def show(self):
         if self.card_img is not None:

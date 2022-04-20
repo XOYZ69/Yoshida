@@ -9,7 +9,7 @@ cards = []
 with open('data/card_sets/example_cards.json', 'r', encoding='utf-8') as example:
     example_json = json.loads(example.read())
     for card in example_json['cards']:
-        print(card)
+        print('Card:', card)
         cards.append(Card(example_json['design']))
         cards[-1].create(card)
     

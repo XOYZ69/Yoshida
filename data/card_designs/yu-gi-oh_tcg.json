@@ -1,0 +1,25 @@
+{
+    "setname":  "yu-gi-oh Set-Name",
+    "width":    842,
+    "height":   1228,
+    "body": [
+
+        {
+            "type":         "image",
+            "desc":         "Card Background for the individual card type",
+            "x":            0,
+            "y":            0,
+            "width":        "100%",
+            "height":       "100%",
+            "image_path":   "<<$var_true_path&/data/assets/yugioh_assets/cards/&$var_card_type&.png"
+        }
+
+    ],
+    "var_true_path":    "Will be replaced with the absolute path of Yoshida on your System to avoid FILE_NOT_FOUND Errors",
+
+    "var_author":       "Yoshida Card Maker",
+    "var_card_id":      "00000001",
+    "var_card_title":   "Default Title",
+
+    "var_card_type":    "monster-effect"
+}
