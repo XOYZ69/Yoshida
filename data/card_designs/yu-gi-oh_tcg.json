@@ -12,6 +12,16 @@
             "width":        "100%",
             "height":       "100%",
             "image_path":   "<<$var_true_path&/data/assets/yugioh_assets/cards/&$var_card_type&.png"
+        },
+        {
+            "type":         "image",
+            "desc":         "Level Stars",
+            "x":            ">>( 380 * 2 ) - ( $var_star_index + 1 ) * 54",
+            "y":            ">>76 * 2",
+            "width":        48,
+            "height":       48,
+            "image_path":   "<<$var_true_path&/data/assets/yugioh_assets/lvl/level-star-&$var_star_type&.png",
+            "logic":        "FOR#$var_star_index#0#8"
         }
 
     ],
@@ -20,6 +30,7 @@
     "var_author":       "Yoshida Card Maker",
     "var_card_id":      "00000001",
     "var_card_title":   "Default Title",
+    "var_star_type":    "blue",
 
-    "var_card_type":    "monster-effect"
+    "var_card_type":    "monster-slifer"
 }

@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.3.1
+    • Fixed the FOR logic in object logic
+    • Edited output
+
 ## v0.3.0
     • Added
         • Using '<<' at the beginning enables string builder
@@ -8,7 +12,7 @@
         • Added the 'logic' key to objects
             • Can be used for 'FOR' or 'IF' statements
             • untested and not guarenteed to function correctly
-            
+
     • Changed
         • Formulas are now defined by '>>' at the beginning
 

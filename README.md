@@ -1,4 +1,4 @@
-# Yoshida v0.3.0
+# Yoshida v0.3.1
 
 Yoshida is "Card Maker Software" for dynamically creating cards for anything. Design your own Layout and fill the Programm with the needed information. And BOOOM your card is printed.
 

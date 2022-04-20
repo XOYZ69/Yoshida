@@ -1,5 +1,6 @@
 import os
 import json
+import copy
 
 from PIL import Image, ImageDraw, ImageFont
 from colorama import Fore
@@ -93,9 +94,6 @@ class Card:
                 
                 # Remove the $ to get the variable name
                 variable = cache[1][1:]
-
-                if variable not in object:
-                    object[variable] = int(cache[2])
                 
                 int_from  = int(cache[2])
                 int_to    = int(cache[3])
@@ -106,7 +104,10 @@ class Card:
                     int_steps = 1
 
                 for object[variable] in range(int_from, int_to, int_steps):
-                    self.format_values(object)
+                    self.card_infos[variable] = object[variable]
+
+                    self.format_values(copy.copy(object))
+                    # print(Fore.LIGHTMAGENTA_EX + str(object[variable]), Fore.LIGHTYELLOW_EX + str(object))
             
             elif cache[0] == 'IF':
                 pass
@@ -152,10 +153,12 @@ class Card:
 
                         cache_formula += str(cache_item) + ' '
                     
-                    self.log(cache_formula)
                     formula_output = eval(cache_formula)
-                    self.log(formula_output)
-                    self.log(int(formula_output))
+
+                    self.log(Fore.BLUE + cache_formula)
+                    self.log(Fore.YELLOW + str(formula_output))
+
+                    object[value] = formula_output
                 
                 # String Builder
                 elif object[value][0:2] == '<<':
