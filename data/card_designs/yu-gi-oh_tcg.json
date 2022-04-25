@@ -21,7 +21,9 @@
             "width":        48,
             "height":       48,
             "image_path":   "<<$var_true_path&/data/assets/yugioh_assets/lvl/level-star-&$var_star_type&.png",
-            "logic":        "FOR#$var_star_index#0#8"
+            "logic":        "FOR#$var_star_index#0#8",
+            "blend_mode":   "basic",
+            "use_alpha":    true
         }
 
     ],

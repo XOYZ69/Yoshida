@@ -7,5 +7,8 @@
     "width":            50,
     "anchor":           "lt",
     "image_path":       "data/example/gamecard_simple/icons8-google-scholar-512.png",
-    "logic":            null
+    "logic":            null,
+    "blend_mode":       "basic",
+    "opacity":          1.0,
+    "use_alpha":        false
 }

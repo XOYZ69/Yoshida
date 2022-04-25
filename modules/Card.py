@@ -6,6 +6,8 @@ from PIL import Image, ImageDraw, ImageFont
 from colorama import Fore
 from numpy import int_, var
 
+from modules.Image_math import get_alpha_calculation, screen
+
 class Card:
 
     true_path = __file__.split('modules')[0]
@@ -250,7 +252,7 @@ class Card:
                 object['image_path'] = self.template['image_path']
             
             # Create new image instance
-            new_image = Image.open(object['image_path'])
+            new_image = Image.open(object['image_path']).convert('RGBA')
 
             new_image = new_image.resize(
                 (
@@ -272,13 +274,54 @@ class Card:
                 object['anchor']
             )
 
-            self.card_img.paste(
-                new_image,
-                (
-                    new_xy[0],
-                    new_xy[1]
-                )
-            )
+            for img_h in range(int(object['height'])):
+                for img_w in range(int(object['width'])):
+                    current_pixel = new_image.getpixel((img_w, img_h))
+
+                    # Basic Blend
+                    if object['blend_mode'] == 'basic':
+                        current_pixel = (
+                            current_pixel[0],
+                            current_pixel[1],
+                            current_pixel[2],
+                            current_pixel[3]
+                        )
+                    
+                    # Substract Blend
+                    elif object['blend_mode'] == 'substract':
+                        current_pixel = (
+                            min(
+                                self.card_img.getpixel(
+                                    (new_xy[0] + img_w, new_xy[1] + img_h)
+                                )[0] - current_pixel[0],
+                                0
+                            ),
+                            min(
+                                self.card_img.getpixel(
+                                    (new_xy[0] + img_w, new_xy[1] + img_h)
+                                )[1] - current_pixel[1],
+                                0
+                            ),
+                            min(
+                                self.card_img.getpixel(
+                                    (new_xy[0] + img_w, new_xy[1] + img_h)
+                                )[2] - current_pixel[2],
+                                0
+                            ),
+                            current_pixel[3]
+                        )
+
+                    # Use alpha calculations to enable alpha matte
+                    if object['use_alpha']:
+                        current_pixel = get_alpha_calculation(
+                            current_pixel,
+                            self.card_img.getpixel((new_xy[0] + img_w, new_xy[1] + img_h))
+                        )
+
+                    self.card_img.putpixel(
+                        (new_xy[0] + img_w, new_xy[1] + img_h),
+                        current_pixel
+                    )
 
     def validate(self):
         if self.card_infos is not None:
