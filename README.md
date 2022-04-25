@@ -21,3 +21,13 @@ For example usage look in "data/card_designs/gamecard_simple.json".
 Since v0.2.1-alpha you can even use the '&' parameter at the beginning to activate the formula function. Make a space after every value. Even if it's just a bracket.
 
 ---
+
+## Blend Modes
+
+### - Basic
+- Simply copy / paste the new image over the old
+
+### - Substract
+- Substract the image from the pixels benath it
+
+---
