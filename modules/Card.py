@@ -1,12 +1,16 @@
+from functools import cache
 import os
 import json
 import copy
+import string
+import textwrap
 
-from PIL import Image, ImageDraw, ImageFont
-from colorama import Fore
-from numpy import int_, var
+from PIL        import Image, ImageDraw, ImageFont, ImageFilter
+from colorama   import Fore
+from numpy      import int_, var
+from tqdm       import tqdm
 
-from modules.Image_math import get_alpha_calculation, screen
+from modules.Image_math import get_alpha_calculation, get_alpha_v2_calculation
 
 class Card:
 
@@ -27,6 +31,9 @@ class Card:
 
     def __init__(self, design) -> None:
         self.design_load(design)
+
+        if 'var_border_width' not in self.card_design:
+            self.card_design['var_border_width'] = 0
 
     def design_load(self, design_name):
         # If design is not in design folder exit here
@@ -50,6 +57,8 @@ class Card:
         # Validate and fill up missing inforamtion with base information
         self.validate()
 
+        self.card_infos = self.format_values(self.card_infos, returner=True)
+
         # Create the card
         self.card_img = Image.new('RGBA',
             (
@@ -65,6 +74,8 @@ class Card:
         for object in self.card_design['body']:
             object = self.validate_object(object)
             self.build_object(object)
+        
+        self.log(Fore.LIGHTYELLOW_EX + 'Finished Building')
 
     def validate_object(self, object_cache):
         object = object_cache
@@ -97,11 +108,24 @@ class Card:
                 # Remove the $ to get the variable name
                 variable = cache[1][1:]
                 
-                int_from  = int(cache[2])
-                int_to    = int(cache[3])
+                cacher_dict = {
+                        'int_from': cache[2],
+                        'int_to':   cache[3],
+                    }
 
                 if len(cache) > 4:
-                    int_steps = int(cache[4])
+                    cacher_dict['int_steps'] = cache[4]
+
+                cache_d = self.format_values(
+                    cacher_dict,
+                    returner = True
+                )
+
+                int_from  = int(cache_d['int_from'])
+                int_to    = int(cache_d['int_to'])
+
+                if len(cache) > 4:
+                    int_steps = int(cache_d['int_steps'])
                 else:
                     int_steps = 1
 
@@ -114,7 +138,7 @@ class Card:
             elif cache[0] == 'IF':
                 pass
 
-    def format_values(self, object):
+    def format_values(self, object, returner = False):
         
         # Enable custom definition usage
         for value in object:
@@ -157,10 +181,12 @@ class Card:
                     
                     formula_output = eval(cache_formula)
 
-                    self.log(Fore.BLUE + cache_formula)
-                    self.log(Fore.YELLOW + str(formula_output))
+                    # self.log(Fore.BLUE + cache_formula)
+                    # self.log(Fore.YELLOW + str(formula_output))
 
                     object[value] = formula_output
+
+                    # self.log(Fore.LIGHTRED_EX + '<< ' + Fore.LIGHTMAGENTA_EX + cache_formula + Fore.RESET + ' -> ' + Fore.LIGHTCYAN_EX + str(formula_output) + Fore.RESET)
                 
                 # String Builder
                 elif object[value][0:2] == '<<':
@@ -170,13 +196,13 @@ class Card:
 
                     for string_value in cache:
                         if string_value[0] == '$':
-                            cache_out += self.card_infos[string_value[1:]]
+                            cache_out += str(self.card_infos[string_value[1:]])
                         else:
                             cache_out += string_value
                     
                     object[value] = cache_out
 
-                    print(Fore.LIGHTRED_EX + '<<', object[value], Fore.RESET)
+                    self.log(Fore.LIGHTRED_EX + '<< ' + Fore.LIGHTMAGENTA_EX + str(object[value]) + Fore.RESET)
                 else:
                     # Support old handling if string is not defined as a formula
 
@@ -198,11 +224,15 @@ class Card:
                         elif value in ['y', 'height']:
                             object[value] = self.card_img.height - int(object[value].replace('!', ''))
                 
-
-        self.place_object(object)
+        if returner:
+            return object
+        else:
+            self.place_object(object)
 
 
     def place_object(self, object):
+
+        self.log(Fore.CYAN + 'Placing [' + object['type'] + ']' + Fore.RESET)
 
         # Draw Rectangles
         if object['type'] == 'rectangle':
@@ -224,11 +254,30 @@ class Card:
             
             text_font = ImageFont.truetype(self.folders['fonts'] + object['font'] + '/' + object['font'] + '.ttf', object['font_size'])
 
+            # If text got a defined texbox use it instead
+            if object['max_width'] is not None:
+                max_width = object['max_width']
+            else:
+                if object['max_width'] is None:
+                    max_width = self.card_design['width'] - 2 * self.card_design['var_border_width'] - object['padding']
+                else:
+                    max_width = object['max_width']
+
+            # Guideline
+            self.card_img_draw.line(
+                (
+                    max_width,
+                    0,
+                    max_width,
+                    self.card_infos['height']
+                )
+            )
+
             # Calculate if '\n' is needed to display text
             object['text'] = self.calculate_linebreak(
                 text =          object['text'],
                 font =          text_font,
-                max_width =     self.card_design['width'] - 2 * self.card_design['var_border_width'] - object['padding']
+                max_width =     max_width
             )
             
             self.card_img_draw.text(
@@ -239,7 +288,7 @@ class Card:
                 text    = object['text'],
                 fill    = object['color'],
                 font    = text_font,
-                anchor  = object['anchor'],
+                anchor  = object['anchor'] if '\n' not in object['text'] else None,
                 align   = object['align'],
                 spacing = object['spacing']
             )
@@ -258,8 +307,21 @@ class Card:
                 (
                     int(object['width']),
                     int(object['height'])
-                )
+                ),
+                resample=Image.BILINEAR
             )
+
+            # Filters
+            if object['filter'] is not None:
+                for filter in object['filter'].split(','):
+                    if filter == 'sharpen':
+                        new_image = new_image.filter(ImageFilter.SHARPEN)
+                    elif filter == 'detail':
+                        new_image = new_image.filter(ImageFilter.DETAIL)
+                    elif filter == 'edge':
+                        new_image = new_image.filter(ImageFilter.EDGE_ENHANCE)
+                    elif filter == 'find_edges':
+                        new_image = new_image.filter(ImageFilter.FIND_EDGES)
 
             # Calculate anchor positions
             new_xy = self.calculate_anchor(
@@ -274,7 +336,7 @@ class Card:
                 object['anchor']
             )
 
-            for img_h in range(int(object['height'])):
+            for img_h in tqdm(range(int(object['height'])), desc='Placing Image [' + object['desc'] + ']'):
                 for img_w in range(int(object['width'])):
                     current_pixel = new_image.getpixel((img_w, img_h))
 
@@ -314,6 +376,11 @@ class Card:
                     # Use alpha calculations to enable alpha matte
                     if object['use_alpha']:
                         current_pixel = get_alpha_calculation(
+                            current_pixel,
+                            self.card_img.getpixel((new_xy[0] + img_w, new_xy[1] + img_h))
+                        )
+                    elif object['use_alpha_v2']:
+                        current_pixel = get_alpha_v2_calculation(
                             current_pixel,
                             self.card_img.getpixel((new_xy[0] + img_w, new_xy[1] + img_h))
                         )
@@ -375,7 +442,7 @@ class Card:
         
         return return_anchor_tuple
     
-    def calculate_linebreak(self, text, font, max_width):
+    def calculate_linebreak_old(self, text, font, max_width):
         
         return_text = ['']
 
@@ -385,7 +452,7 @@ class Card:
             if cache_font_width > max_width:
                 return_text.append(item)
             else:
-                return_text[-1] += ' ' + item
+                return_text[-1] += ' ' + item if return_text != [''] else item
 
         true_return = ''
 
@@ -396,6 +463,21 @@ class Card:
                 true_return += '\n'
 
         return true_return
+    
+    def calculate_linebreak(self, text, font, max_width):
+        avg_char_width = sum(font.getsize(char)[0] for char in string.ascii_letters) / len(string.ascii_letters)
+
+        max_char_count = max_width // avg_char_width
+        
+        true_return = textwrap.fill(text, width = max_char_count)
+
+        self.log(Fore.RED + 'calculate_linebreak(self, ' + text + ', ' + str(font) + ', ' + str(max_width) + '\n' + Fore.CYAN + true_return + Fore.RESET)
+
+        self.log(Fore.BLUE + 'max_char_count: ' + str(max_char_count))
+        self.log(Fore.BLUE + 'avg_char_width: ' + str(avg_char_width))
+
+        return true_return
+            
     
     def log(self, text):
         print('Log:', text)

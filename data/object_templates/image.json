@@ -10,5 +10,7 @@
     "logic":            null,
     "blend_mode":       "basic",
     "opacity":          1.0,
-    "use_alpha":        false
+    "use_alpha":        false,
+    "use_alpha_v2":     false,
+    "filter":           null
 }

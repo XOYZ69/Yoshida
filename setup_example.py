@@ -6,7 +6,9 @@ from modules.Card import Card
 
 cards = []
 
-with open('data/card_sets/example_cards.json', 'r', encoding='utf-8') as example:
+path = 'data/card_sets/example_cards'
+
+with open(path + '.json', 'r', encoding='utf-8') as example:
     example_json = json.loads(example.read())
     for card in example_json['cards']:
         print('Card:', card)
@@ -16,3 +18,4 @@ with open('data/card_sets/example_cards.json', 'r', encoding='utf-8') as example
     # for card in cards:
     #     card.show()
     cards[0].show()
+    cards[0].card_img.save(path + '_.png')

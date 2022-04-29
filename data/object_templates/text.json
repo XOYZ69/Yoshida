@@ -11,5 +11,6 @@
     "anchor":           "mb",
     "spacing":          15,
     "padding":          50,
-    "logic":            null
+    "logic":            null,
+    "max_width":        null
 }
