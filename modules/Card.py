@@ -257,27 +257,20 @@ class Card:
             # If text got a defined texbox use it instead
             if object['max_width'] is not None:
                 max_width = object['max_width']
+                f = 'red'
             else:
+                f = 'blue'
                 if object['max_width'] is None:
                     max_width = self.card_design['width'] - 2 * self.card_design['var_border_width'] - object['padding']
                 else:
                     max_width = object['max_width']
 
-            # Guideline
-            self.card_img_draw.line(
-                (
-                    max_width,
-                    0,
-                    max_width,
-                    self.card_infos['height']
-                )
-            )
-
             # Calculate if '\n' is needed to display text
-            object['text'] = self.calculate_linebreak(
+            object['text'] = self.calculate_linebreak_old(
                 text =          object['text'],
                 font =          text_font,
-                max_width =     max_width
+                max_width =     max_width,
+                stretch_line =  object['stretch_line']
             )
             
             self.card_img_draw.text(
@@ -442,7 +435,7 @@ class Card:
         
         return return_anchor_tuple
     
-    def calculate_linebreak_old(self, text, font, max_width):
+    def calculate_linebreak_old(self, text, font, max_width, stretch_line = False):
         
         return_text = ['']
 
@@ -454,30 +447,94 @@ class Card:
             else:
                 return_text[-1] += ' ' + item if return_text != [''] else item
 
+                print(cache_font_width, 'of', max_width, return_text[-1])
+
         true_return = ''
 
         for i in range(len(return_text)):
-            true_return += return_text[i]
+            cache = return_text[i]
+
+            if stretch_line and i < len(return_text) - 1:
+                cache = self.stretch_line(cache, font, max_width)
+            
+            true_return += cache
 
             if i < len(return_text) - 1:
                 true_return += '\n'
 
         return true_return
     
-    def calculate_linebreak(self, text, font, max_width):
+    def calculate_linebreak(self, text, font, max_width, stretch_line = False):
         avg_char_width = sum(font.getsize(char)[0] for char in string.ascii_letters) / len(string.ascii_letters)
 
         max_char_count = max_width // avg_char_width
         
-        true_return = textwrap.fill(text, width = max_char_count)
+        if stretch_line:
+            # Wrap the text
+            true_return_list = textwrap.wrap(text, width = max_char_count)
+
+            # Build the return
+            true_return = ''
+
+            for x in true_return_list:
+                true_return += self.stretch_line(x, font, max_width)
+
+            for line in range(len(true_return_list)):
+                true_return += true_return_list[line]
+                if line < len(true_return_list) - 1:
+                    true_return += '\n'
+        else:
+            true_return = textwrap.fill(text, width = max_char_count)
 
         self.log(Fore.RED + 'calculate_linebreak(self, ' + text + ', ' + str(font) + ', ' + str(max_width) + '\n' + Fore.CYAN + true_return + Fore.RESET)
 
         self.log(Fore.BLUE + 'max_char_count: ' + str(max_char_count))
         self.log(Fore.BLUE + 'avg_char_width: ' + str(avg_char_width))
+        self.log(Fore.BLUE + 'max_width:      ' + str(max_width))
 
         return true_return
+
+    def stretch_line(self, line, font, max_width):
+        self.log('stretch_line')
+
+        line_split = line.split(' ')
+
+        spaces = []
+
+        for i in range(len(line_split)):
+            spaces.append(' ')
+
+        index = 0
+
+        cache_line = line
+        cache_line_w = font.getsize(cache_line)[0]
+
+        while cache_line_w < max_width:
+            spaces[index] += ' '
+
+            cache_line = ''
+
+            # Build line
+            for i in range(len(line_split)):
+                cache_line += line_split[i]
+
+                if i < len(spaces) - 1:
+                    cache_line += spaces[i]
+
+            cache_line_w = font.getsize(cache_line)[0]
+
+            # Increase index
+            index += 1
+
+            if index >= len(spaces):
+                index = 0
             
+            print(cache_line)
+            print(spaces)
+
+        return cache_line
+        
+
     
     def log(self, text):
         print('Log:', text)

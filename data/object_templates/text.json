@@ -12,5 +12,6 @@
     "spacing":          15,
     "padding":          50,
     "logic":            null,
-    "max_width":        null
+    "max_width":        null,
+    "stretch_line":     false
 }

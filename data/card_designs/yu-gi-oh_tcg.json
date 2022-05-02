@@ -89,7 +89,8 @@
             "font":         "Yu-Gi-Oh! Matrix Book",
             "spacing":      1,
             "align":        "left",
-            "max_width":    ">>w_%100 - ( 36 * $var_scale )"
+            "max_width":    ">>w_%100 - ( ( 36 * $var_scale ) * 2 )",
+            "stretch_line": true
         }
 
     ],
