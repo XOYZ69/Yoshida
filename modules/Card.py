@@ -163,7 +163,7 @@ class Card:
                                 cache_item = (float(item.replace('%', '')) / 100) * self.card_img.height
                         elif 'w_%' in item:
                             cache_item = (float(item.replace('w_%', '')) / 100) * self.card_img.width
-                        elif 'w_%' in item:
+                        elif 'h_%' in item:
                             cache_item = (float(item.replace('h_%', '')) / 100) * self.card_img.height
 
                         # Reverse Pixel Definition (Can't explain it. it Works)

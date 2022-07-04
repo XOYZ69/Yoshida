@@ -61,10 +61,10 @@
         {
             "type":         "text",
             "desc":         "Defense Points",
-            "x":            ">>348 * $var_scale",
+            "x":            ">>w_%100 - ( 33 * $var_scale )",
             "y":            ">>573 * $var_scale",
-            "text":         "<<$var_monster_atk",
-            "anchor":       "lb",
+            "text":         "<<$var_monster_def",
+            "anchor":       "rb",
             "font_size":    ">>16 * $var_scale",
             "font":         "Yu-Gi-Oh! ITC Stone Serif Small Caps Bold"
         },
@@ -107,6 +107,7 @@
 
     "var_monster_lvl":      5,
     "var_monster_atk":      666,
+    "var_monster_def":      6666,
 
     "var_monster_attr":     "[Göttliches Ungeheuer]",
 
