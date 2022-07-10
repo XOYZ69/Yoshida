@@ -98,7 +98,6 @@ class Card:
 
         if object['logic'] is None or object['logic'] == '':
             self.format_values(object)
-
         else:
             cache = object['logic'].split('#')
 
@@ -137,6 +136,14 @@ class Card:
             
             elif cache[0] == 'IF':
                 pass
+
+            elif cache[0] == 'VISIBILITY':
+                if cache[1] in ['TRUE', 'true', '1', 'yes', 'YES', 'y']:
+                    self.format_values(copy.copy(object))
+                elif cache[1] == 'IF':
+                    cache_var = cache[2][1:].split(' == ')
+                    if eval("'" + self.card_design[cache_var[0]] + "' == " + cache_var[1]) == True:
+                        self.format_values(copy.copy(object))
 
     def format_values(self, object, returner = False):
         

@@ -91,6 +91,58 @@
             "align":        "left",
             "max_width":    ">>w_%100 - ( ( 36 * $var_scale ) * 2 )",
             "stretch_line": true
+        },
+        {
+            "type":         "image",
+            "desc":         "Card Attribute",
+            "x":            ">>w_%100 - ( 70 * $var_scale )",
+            "y":            ">>29 * $var_scale",
+            "image_path":   "<<$var_true_path&/data/assets/yugioh_assets/attributes/attribute-&$var_card_attribute&.png",
+            "width":        ">>38 * $var_scale",
+            "height":       ">>38 * $var_scale",
+            "use_alpha":    true
+        },
+        {
+            "type":         "text",
+            "desc":         "Card ID",
+            "x":            ">>21 * $var_scale",
+            "y":            ">>h_%100 - ( 16 * $var_scale )",
+            "font":         "yumin",
+            "text":         "$var_card_id",
+            "font_size":    ">>13 * $var_scale",
+            "anchor":       "lb",
+            "logic":        "VISIBILITY#TRUE"
+        },
+        {
+            "type":         "text",
+            "desc":         "Card Edition",
+            "x":            ">>82 * $var_scale",
+            "y":            ">>h_%100 - ( 16 * $var_scale )",
+            "font":         "Stone Serif Semibold",
+            "text":         "$var_card_edition",
+            "font_size":    ">>13 * $var_scale",
+            "anchor":       "lb"
+        },
+        {
+            "type":         "text",
+            "desc":         "Card Edition - 'st'-symbol for first",
+            "x":            ">>88 * $var_scale",
+            "y":            ">>h_%100 - ( 26 * $var_scale )",
+            "font":         "Stone Serif Semibold",
+            "text":         "st",
+            "font_size":    ">>15 * $var_scale",
+            "anchor":       "lt",
+            "logic":        "VISIBILITY#IF#$var_card_edition == '1  Edition'"
+        },
+        {
+            "type":         "text",
+            "desc":         "Card Set",
+            "x":            ">>w_%100 - ( 44 * $var_scale )",
+            "y":            ">>443 * $var_scale",
+            "font":         "Stone Serif Semibold",
+            "text":         "NECH-EN026",
+            "font_size":    ">>13 * $var_scale",
+            "anchor":       "rt"
         }
 
     ],
@@ -98,10 +150,12 @@
 
     "var_author":           "Yoshida Card Maker",
     "var_card_id":          "00000001",
+    "var_card_edition":     "Limited Edition",
     "var_card_title":       "Default Title",
     "var_card_type":        "monster-effect",
     "var_star_type":        "blue",
     "var_card_description": "A simple description of a card.",
+    "var_card_attribute":   "light",
 
     "var_card_splashart":   "",
 
