@@ -1,0 +1,4 @@
+numpy
+colorama
+pillow
+tqdm
