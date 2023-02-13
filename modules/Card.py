@@ -457,7 +457,7 @@ class Card:
         return_text = ['']
 
         for item in text.split(' '):
-            cache_font_width, cache_font_height = font.getsize(return_text[-1] + ' ' + item)
+            cache_font_width = font.getlength(return_text[-1] + ' ' + item)
 
             if cache_font_width > max_width:
                 return_text.append(item)
