@@ -3,6 +3,7 @@ import json
 import copy
 import string
 import textwrap
+import time
 
 from PIL        import Image, ImageDraw, ImageFont, ImageFilter
 from colorama   import Fore
@@ -22,13 +23,21 @@ class Card:
 
     card_design = None
 
+    time_creation   = None
+    time_building   = None
+
+    advanced_debugging = False
+
     folders = {
         'template':     true_path + 'data/object_templates/',
         'card_designs': true_path + 'data/card_designs/',
         'fonts':        true_path + 'data/fonts/'
     }
 
-    def __init__(self, design) -> None:
+    def __init__(self, design, advanced_debugging = False) -> None:
+        self.time_creation = time.time()
+        self.advanced_debugging = advanced_debugging
+
         self.design_load(design)
 
         if 'var_border_width' not in self.card_design:
@@ -45,6 +54,7 @@ class Card:
             self.card_design = json.loads(design.read())
 
     def create(self, card_infos=None):
+        self.time_building = time.time()
         self.card_infos = self.card_design
 
         # Insert given information
@@ -74,7 +84,8 @@ class Card:
             object = self.validate_object(object)
             self.build_object(object)
         
-        self.log(Fore.LIGHTYELLOW_EX + 'Finished Building')
+        self.time_building = time.time() - self.time_building
+        self.log(Fore.LIGHTYELLOW_EX + 'Finished Building in ' + Fore.RED + str(round(self.time_building, 2)) + 's' + Fore.RESET)
 
     def validate_object(self, object_cache):
         object = object_cache
@@ -453,7 +464,8 @@ class Card:
             else:
                 return_text[-1] += ' ' + item if return_text != [''] else item
 
-                print(cache_font_width, 'of', max_width, return_text[-1])
+                if self.advanced_debugging:
+                    print(cache_font_width, 'of', max_width, return_text[-1])
 
         true_return = ''
 
@@ -535,8 +547,9 @@ class Card:
             if index >= len(spaces):
                 index = 0
             
-            print(cache_line)
-            print(spaces)
+            if self.advanced_debugging:
+                print(cache_line)
+                print(spaces)
 
         return cache_line
         

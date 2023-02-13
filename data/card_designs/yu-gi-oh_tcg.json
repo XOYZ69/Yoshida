@@ -117,7 +117,7 @@
             "type":         "text",
             "desc":         "Card Edition",
             "x":            ">>82 * $var_scale",
-            "y":            ">>h_%100 - ( 16 * $var_scale )",
+            "y":            ">>h_%100 - ( 17 * $var_scale )",
             "font":         "Stone Serif Semibold",
             "text":         "$var_card_edition",
             "font_size":    ">>13 * $var_scale",
