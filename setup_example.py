@@ -6,7 +6,7 @@ from modules.Card import Card
 
 cards = []
 
-path = 'data/card_sets/example_cards'
+path = 'data/card_sets/example_game_cards'
 
 with open(path + '.json', 'r', encoding='utf-8') as example:
     example_json = json.loads(example.read())

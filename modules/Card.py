@@ -3,7 +3,6 @@ import json
 import copy
 import string
 import textwrap
-import time
 
 from PIL        import Image, ImageDraw, ImageFont, ImageFilter
 from colorama   import Fore
@@ -23,21 +22,13 @@ class Card:
 
     card_design = None
 
-    time_creation   = None
-    time_building   = None
-
-    advanced_debugging = False
-
     folders = {
         'template':     true_path + 'data/object_templates/',
         'card_designs': true_path + 'data/card_designs/',
         'fonts':        true_path + 'data/fonts/'
     }
 
-    def __init__(self, design, advanced_debugging = False) -> None:
-        self.time_creation = time.time()
-        self.advanced_debugging = advanced_debugging
-
+    def __init__(self, design) -> None:
         self.design_load(design)
 
         if 'var_border_width' not in self.card_design:
@@ -54,7 +45,6 @@ class Card:
             self.card_design = json.loads(design.read())
 
     def create(self, card_infos=None):
-        self.time_building = time.time()
         self.card_infos = self.card_design
 
         # Insert given information
@@ -84,8 +74,7 @@ class Card:
             object = self.validate_object(object)
             self.build_object(object)
         
-        self.time_building = time.time() - self.time_building
-        self.log(Fore.LIGHTYELLOW_EX + 'Finished Building in ' + Fore.RED + str(round(self.time_building, 2)) + 's' + Fore.RESET)
+        self.log(Fore.LIGHTYELLOW_EX + 'Finished Building')
 
     def validate_object(self, object_cache):
         object = object_cache
@@ -264,6 +253,18 @@ class Card:
                 radius  = object['border_radius']
             )
         
+        # Draw Ellipse (also used for circles)
+        if object['type'] == 'ellipse':
+            self.card_img_draw.ellipse(
+                [
+                    object['x'],
+                    object['y'],
+                    object['x'] + object['width'],
+                    object['y'] + object['height']
+                ],
+                fill    = object['color']
+            )
+        
         # Draw Text
         if object['type'] == 'text':
             if object['font'] not in os.listdir('data/fonts'):
@@ -298,7 +299,7 @@ class Card:
                 text    = object['text'],
                 fill    = object['color'],
                 font    = text_font,
-                anchor  = object['anchor'] if '\n' not in object['text'] else None,
+                anchor  = object['anchor'],
                 align   = object['align'],
                 spacing = object['spacing']
             )
@@ -320,6 +321,8 @@ class Card:
                 ),
                 resample=Image.BILINEAR
             )
+
+            print(new_image.size)
 
             # Filters
             if object['filter'] is not None:
@@ -457,15 +460,14 @@ class Card:
         return_text = ['']
 
         for item in text.split(' '):
-            cache_font_width = font.getlength(return_text[-1] + ' ' + item)
+            cache_font_width, cache_font_height = font.getsize(return_text[-1] + ' ' + item)
 
             if cache_font_width > max_width:
                 return_text.append(item)
             else:
                 return_text[-1] += ' ' + item if return_text != [''] else item
 
-                if self.advanced_debugging:
-                    print(cache_font_width, 'of', max_width, return_text[-1])
+                self.log(str(cache_font_width) + ' of ' + str(max_width) + ': ' + return_text[-1])
 
         true_return = ''
 
@@ -483,7 +485,7 @@ class Card:
         return true_return
     
     def calculate_linebreak(self, text, font, max_width, stretch_line = False):
-        avg_char_width = sum(font.getlength(char) for char in string.ascii_letters) / len(string.ascii_letters)
+        avg_char_width = sum(font.getsize(char)[0] for char in string.ascii_letters) / len(string.ascii_letters)
 
         max_char_count = max_width // avg_char_width
         
@@ -525,7 +527,7 @@ class Card:
         index = 0
 
         cache_line = line
-        cache_line_w = font.getlength(cache_line)
+        cache_line_w = font.getsize(cache_line)[0]
 
         while cache_line_w < max_width:
             spaces[index] += ' '
@@ -539,7 +541,7 @@ class Card:
                 if i < len(spaces) - 1:
                     cache_line += spaces[i]
 
-            cache_line_w = font.getlength(cache_line)
+            cache_line_w = font.getsize(cache_line)[0]
 
             # Increase index
             index += 1
@@ -547,9 +549,8 @@ class Card:
             if index >= len(spaces):
                 index = 0
             
-            if self.advanced_debugging:
-                print(cache_line)
-                print(spaces)
+            print(cache_line)
+            print(spaces)
 
         return cache_line
         
