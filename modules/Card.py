@@ -265,6 +265,15 @@ class Card:
                 fill    = object['color']
             )
         
+        # Draw Polygon
+        if object['type'] == 'polygon':
+            self.card_img_draw.polygon(
+                xy      = object['xy_sequence'],
+                fill    = object['color'],
+                outline = object['outline_color'],
+                width   =  object['outline_width']
+            )
+        
         # Draw Text
         if object['type'] == 'text':
             if object['font'] not in os.listdir('data/fonts'):
