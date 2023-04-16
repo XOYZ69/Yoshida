@@ -50,6 +50,8 @@
             "font_size":        50,
             "color":            "$var_text_color",
             "anchor":           "mm",
+            "align":            "center",
+            "stretch_line":     false,
             "calculation_example":  "&$var_border_width + 25 * 3 + $width / w_%40 + w_!54 * ( h_!43 / $var_border_width )"
         },
         {

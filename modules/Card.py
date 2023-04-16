@@ -303,6 +303,9 @@ class Card:
                 align   = object['align'],
                 spacing = object['spacing']
             )
+            
+            if '\n' in object['text']:
+                self.log('\\n in >> ' + object['text'])
 
         # Insert images
         if object['type'] == 'image':

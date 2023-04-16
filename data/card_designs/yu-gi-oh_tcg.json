@@ -84,7 +84,6 @@
             "x":            ">>36 * $var_scale",
             "y":            ">>480 * $var_scale",
             "text":         "$var_card_description",
-            "anchor":       "lt",
             "font_size":    ">>14 * $var_scale",
             "font":         "Yu-Gi-Oh! Matrix Book",
             "spacing":      1,
