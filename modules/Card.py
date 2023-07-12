@@ -339,14 +339,15 @@ class Card:
             # Filters
             if object['filter'] is not None:
                 for filter in object['filter'].split(','):
-                    if filter == 'sharpen':
-                        new_image = new_image.filter(ImageFilter.SHARPEN)
-                    elif filter == 'detail':
-                        new_image = new_image.filter(ImageFilter.DETAIL)
-                    elif filter == 'edge':
-                        new_image = new_image.filter(ImageFilter.EDGE_ENHANCE)
-                    elif filter == 'find_edges':
-                        new_image = new_image.filter(ImageFilter.FIND_EDGES)
+                    match filter:
+                        case 'sharpen':
+                            new_image = new_image.filter(ImageFilter.SHARPEN)
+                        case 'detail':
+                            new_image = new_image.filter(ImageFilter.DETAIL)
+                        case 'edge':
+                            new_image = new_image.filter(ImageFilter.EDGE_ENHANCE)
+                        case 'find_edges':
+                            new_image = new_image.filter(ImageFilter.FIND_EDGES)
 
             # Calculate anchor positions
             new_xy = self.calculate_anchor(
@@ -365,38 +366,39 @@ class Card:
                 for img_w in range(int(object['width'])):
                     current_pixel = new_image.getpixel((img_w, img_h))
 
-                    # Basic Blend
-                    if object['blend_mode'] == 'basic':
-                        current_pixel = (
-                            current_pixel[0],
-                            current_pixel[1],
-                            current_pixel[2],
-                            current_pixel[3]
-                        )
+                    match object['blend_mode']:
+                        case 'basic':
+                            # Basic Blend
+                            current_pixel = (
+                                current_pixel[0],
+                                current_pixel[1],
+                                current_pixel[2],
+                                current_pixel[3]
+                            )
                     
-                    # Substract Blend
-                    elif object['blend_mode'] == 'substract':
-                        current_pixel = (
-                            min(
-                                self.card_img.getpixel(
-                                    (new_xy[0] + img_w, new_xy[1] + img_h)
-                                )[0] - current_pixel[0],
-                                0
-                            ),
-                            min(
-                                self.card_img.getpixel(
-                                    (new_xy[0] + img_w, new_xy[1] + img_h)
-                                )[1] - current_pixel[1],
-                                0
-                            ),
-                            min(
-                                self.card_img.getpixel(
-                                    (new_xy[0] + img_w, new_xy[1] + img_h)
-                                )[2] - current_pixel[2],
-                                0
-                            ),
-                            current_pixel[3]
-                        )
+                        # Substract Blend
+                        case 'substract':
+                            current_pixel = (
+                                min(
+                                    self.card_img.getpixel(
+                                        (new_xy[0] + img_w, new_xy[1] + img_h)
+                                    )[0] - current_pixel[0],
+                                    0
+                                ),
+                                min(
+                                    self.card_img.getpixel(
+                                        (new_xy[0] + img_w, new_xy[1] + img_h)
+                                    )[1] - current_pixel[1],
+                                    0
+                                ),
+                                min(
+                                    self.card_img.getpixel(
+                                        (new_xy[0] + img_w, new_xy[1] + img_h)
+                                    )[2] - current_pixel[2],
+                                    0
+                                ),
+                                current_pixel[3]
+                            )
 
                     # Use alpha calculations to enable alpha matte
                     if object['use_alpha']:
@@ -434,31 +436,32 @@ class Card:
     def calculate_anchor(self, xy_tuple, wh_tuple, anchor):
         return_anchor_tuple = xy_tuple
 
-        # Anchor LT = Left Top
-        if anchor == 'lt':
-            # Left Top is default in pillow
-            pass
+        match anchor:
+            # Anchor LT = Left Top
+            case 'lt':
+                # Left Top is default in pillow
+                pass
 
-        # Anchor MM = Middle Middle
-        if anchor == 'mm':
-            return_anchor_tuple = (
-                xy_tuple[0] - (wh_tuple[0] // 2),
-                xy_tuple[1] - (wh_tuple[1] // 2)
-            )
-        
-        # Anchor RB = Right Bottom
-        if anchor == 'rb':
-            return_anchor_tuple = (
-                xy_tuple[0] - wh_tuple[0],
-                xy_tuple[1] - wh_tuple[1]
-            )
-        
-        # Anchor RT == Right Top
-        if anchor == 'rt':
-            return_anchor_tuple = (
-                xy_tuple[0] - wh_tuple[0],
-                xy_tuple[1]
-            )
+            # Anchor MM = Middle Middle
+            case 'mm':
+                return_anchor_tuple = (
+                    xy_tuple[0] - (wh_tuple[0] // 2),
+                    xy_tuple[1] - (wh_tuple[1] // 2)
+                )
+            
+            # Anchor RB = Right Bottom
+            case 'rb':
+                return_anchor_tuple = (
+                    xy_tuple[0] - wh_tuple[0],
+                    xy_tuple[1] - wh_tuple[1]
+                )
+            
+            # Anchor RT == Right Top
+            case 'rt':
+                return_anchor_tuple = (
+                    xy_tuple[0] - wh_tuple[0],
+                    xy_tuple[1]
+                )
 
         return_anchor_tuple = (
             int(return_anchor_tuple[0]),
