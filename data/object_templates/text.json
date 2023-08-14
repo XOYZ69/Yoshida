@@ -9,7 +9,7 @@
     "font":             "secrcode",
     "font_style":       null,
     "font_size":        50,
-    "anchor":           "mb",
+    "anchor":           null,
     "spacing":          15,
     "padding":          50,
     "logic":            null,
