@@ -475,7 +475,7 @@ class Card:
         return_text = ['']
 
         for item in text.split(' '):
-            cache_font_width, cache_font_height = font.getsize(return_text[-1] + ' ' + item)
+            cache_font_width = font.getlength(return_text[-1] + ' ' + item)
 
             if cache_font_width > max_width:
                 return_text.append(item)
@@ -500,7 +500,7 @@ class Card:
         return true_return
     
     def calculate_linebreak(self, text, font, max_width, stretch_line = False):
-        avg_char_width = sum(font.getsize(char)[0] for char in string.ascii_letters) / len(string.ascii_letters)
+        avg_char_width = sum(font.getlength(char) for char in string.ascii_letters) / len(string.ascii_letters)
 
         max_char_count = max_width // avg_char_width
         
@@ -542,7 +542,7 @@ class Card:
         index = 0
 
         cache_line = line
-        cache_line_w = font.getsize(cache_line)[0]
+        cache_line_w = font.getlength(cache_line)
 
         while cache_line_w < max_width:
             spaces[index] += ' '
@@ -556,7 +556,7 @@ class Card:
                 if i < len(spaces) - 1:
                     cache_line += spaces[i]
 
-            cache_line_w = font.getsize(cache_line)[0]
+            cache_line_w = font.getlength(cache_line)
 
             # Increase index
             index += 1
