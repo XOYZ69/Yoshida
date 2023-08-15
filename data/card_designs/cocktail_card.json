@@ -1,0 +1,32 @@
+{
+    "setname": "Cocktail Set-Name",
+    "width":    1200,
+    "height":   1800,
+    "body": [
+        {
+            "type":             "image",
+            "desc":             "Cocktail Display Image",
+            "x":                0,
+            "y":                0,
+            "width":            ">>w_%100",
+            "height":           "auto",
+            "image_path":       "$var_image",
+            "filter":           "gradient",
+            "filter_config": {
+                "direction":    "bottom",
+                "length":       500
+            }
+        }
+    ],
+    "var_ingredients": [
+        "4,cl,Gin",
+        "2,cl,Zitronensaft",
+        "3,cl,Maracujanaktar",
+        "6,cl,Johannisbeernektar",
+        "2,cl,Blue curacao Sirup"
+    ],
+    "var_background":   "#FFFFFF",
+    "var_image":        "",
+    "var_url":          "Insert URL Here",
+    "var_id":           "Card ID"
+}

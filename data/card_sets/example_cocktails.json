@@ -1,0 +1,20 @@
+{
+    "design":   "cocktail_card",
+    "setname":  "Test Cocktail Cards",
+    "cards": [
+        {
+            "var_cocktail_name":    "Black Bomabi",
+            "var_text":             "",
+            "var_ingredients": [
+                "4,cl,Gin",
+                "2,cl,Zitronensaft",
+                "3,cl,Maracujanaktar",
+                "6,cl,Johannisbeernektar",
+                "2,cl,Blue curacao Sirup"
+            ],
+            "var_image":            "https://kaufland.media.schwarz/is/image/schwarz/recipe2525213_black_bombay_cocktail_saft_curacao?JGstbGVnYWN5LW9uc2l0ZS0zJA==",
+            "var_url":              "https://filiale.kaufland.de/rezepte/rezeptsuche/rezept.black-bombay.r_id=Recipe_2525213.html",
+            "var_id":               "00000001"
+        }
+    ]
+}

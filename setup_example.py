@@ -7,7 +7,7 @@ import shutil
 
 from modules.Card import Card
 
-def test_card_creation_basis(card_set = ''):
+def test_card_creation_basis(card_set = '', show = False):
 
     print('Testing card set:', card_set)
 
@@ -28,7 +28,7 @@ def test_card_creation_basis(card_set = ''):
         assert True
         return
 
-    assert os.path.exists(json_file)
+    assert os.path.exists(json_file), 'The json file does not exist. Please make sure to enter the correct card_set'
 
     with open(json_file, 'r', encoding = 'utf-8') as example:
         example_json = json.loads(example.read())
@@ -51,10 +51,16 @@ def test_card_creation_basis(card_set = ''):
 
             print('Card {card} completed.'.format(card = filename))
 
+            if show:
+                cards[-1].card_img.show()
+            
             assert os.path.exists(save_location + filename), 'Generated file does not exist.'
 
 def test_gamecard_simple():
     test_card_creation_basis('example_gamecard_simple')
 
 def test_yugioh():
-    test_card_creation_basis('example_yu-gi-oh')
+   test_card_creation_basis('example_yu-gi-oh')
+
+def test_cocktail():
+    test_card_creation_basis('example_cocktails')

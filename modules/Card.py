@@ -3,11 +3,13 @@ import json
 import copy
 import string
 import textwrap
+import requests
 
 from PIL        import Image, ImageDraw, ImageFont, ImageFilter
 from colorama   import Fore
 from numpy      import int_, var
 from tqdm       import tqdm
+from io         import BytesIO
 
 from modules.Image_math import get_alpha_calculation, get_alpha_v2_calculation
 
@@ -321,12 +323,24 @@ class Card:
         # Insert images
         if object['type'] == 'image':
             # Check if the desired image exists
-            if not os.path.exists(object['image_path']):
-                # Correct the image_path to the default
-                object['image_path'] = self.template['image_path']
+            if 'https://' in object['image_path']:
+                new_image = Image.open(BytesIO(requests.get(object['image_path']).content)).convert('RGBA')
+            else:
+                if not os.path.exists(object['image_path']):
+                    # Correct the image_path to the default
+                    object['image_path'] = self.template['image_path']
             
-            # Create new image instance
-            new_image = Image.open(object['image_path']).convert('RGBA')
+                # Create new image instance
+                new_image = Image.open(object['image_path']).convert('RGBA')
+
+            # Automatic Ratio Saling to full width
+            if object['height'] == 'auto':
+                ratio = new_image.size[0] / new_image.size[1]
+                object['height'] = object['width'] * ratio
+
+            if object['width'] == 'auto':
+                ratio = new_image.size[1] / new_image.size[0]
+                object['width'] = object['height'] * ratio
 
             new_image = new_image.resize(
                 (
@@ -350,6 +364,31 @@ class Card:
                             new_image = new_image.filter(ImageFilter.EDGE_ENHANCE)
                         case 'find_edges':
                             new_image = new_image.filter(ImageFilter.FIND_EDGES)
+                        case 'gradient':
+                            if 'filter_config' not in object:
+                                continue
+
+                            match object['filter_config']['direction']:
+                                case 'bottom':
+                                    for x_pixel in range(new_image.size[0]):
+                                        for y_pixel in range(object['filter_config']['length']):
+                                            pixel_back  = self.card_img.getpixel((object['x'] + x_pixel, object['y'] + new_image.size[1] - y_pixel - 1))
+
+                                            pixel_front = new_image.getpixel((x_pixel, new_image.size[1] - y_pixel - 1))
+
+                                            pixel_blend_ration = y_pixel / object['filter_config']['length']
+
+                                            pixel_blend = (
+                                                int((pixel_back[0] * (1 - pixel_blend_ration)) + (pixel_front[0] * pixel_blend_ration)),
+                                                int((pixel_back[1] * (1 - pixel_blend_ration)) + (pixel_front[1] * pixel_blend_ration)),
+                                                int((pixel_back[2] * (1 - pixel_blend_ration)) + (pixel_front[2] * pixel_blend_ration)),
+                                                int((pixel_back[3] * (1 - pixel_blend_ration)) + (pixel_front[3] * pixel_blend_ration))
+                                            )
+
+                                            new_image.putpixel(
+                                                (x_pixel, new_image.size[1] - y_pixel - 1),
+                                                pixel_blend)
+
 
             # Calculate anchor positions
             new_xy = self.calculate_anchor(
@@ -575,4 +614,4 @@ class Card:
     
     def log(self, text, debug_level = 0):
         if debug_level > self.debug_level:
-            self.log('Log:', text)
+            print('Log:', text)
