@@ -28,6 +28,8 @@ class Card:
         'fonts':        true_path + 'data/fonts/'
     }
 
+    debug_level = 5
+
     def __init__(self, design) -> None:
         self.design_load(design)
 
@@ -131,7 +133,7 @@ class Card:
                     self.card_infos[variable] = object[variable]
 
                     self.format_values(copy.copy(object))
-                    # print(Fore.LIGHTMAGENTA_EX + str(object[variable]), Fore.LIGHTYELLOW_EX + str(object))
+                    # self.log(Fore.LIGHTMAGENTA_EX + str(object[variable]), Fore.LIGHTYELLOW_EX + str(object))
             
             elif cache[0] == 'IF':
                 pass
@@ -334,7 +336,7 @@ class Card:
                 resample=Image.BILINEAR
             )
 
-            print(new_image.size)
+            self.log(new_image.size)
 
             # Filters
             if object['filter'] is not None:
@@ -425,7 +427,7 @@ class Card:
                     self.card_infos_missing.append(str(item))
             
             if self.card_infos_missing != []:
-                print('Missing:', self.card_infos_missing)
+                self.log('Missing:', self.card_infos_missing)
         
         self.card_infos['var_true_path'] = self.true_path
     
@@ -564,12 +566,13 @@ class Card:
             if index >= len(spaces):
                 index = 0
             
-            print(cache_line)
-            print(spaces)
+            self.log(cache_line)
+            self.log(spaces)
 
         return cache_line
         
 
     
-    def log(self, text):
-        print('Log:', text)
+    def log(self, text, debug_level = 0):
+        if debug_level > self.debug_level:
+            self.log('Log:', text)
