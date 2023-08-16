@@ -6,16 +6,33 @@
         {
             "type":             "image",
             "desc":             "Cocktail Display Image",
+            "id":               "image_cocktail",
             "x":                0,
             "y":                0,
             "width":            ">>w_%100",
             "height":           "auto",
             "image_path":       "$var_image",
-            "filter":           "gradient",
-            "filter_config": {
-                "direction":    "bottom",
-                "length":       500
-            }
+            "filter":           "cut,gradient",
+            "filter_config": [
+                {
+                    "side":         "top",
+                    "length":       200
+                },
+                {
+                    "direction":    "bottom",
+                    "length":       300
+                }
+            ]
+        },
+        {
+            "type":             "text",
+            "desc":             "Cocktail Name",
+            "x":                ">>w_%50",
+            "y":                ">>h_%50",
+            "align":            "center",
+            "anchor":           "mm",
+            "text":             "$var_cocktail_name",
+            "color":            "#FFFFFF"
         }
     ],
     "var_ingredients": [
@@ -25,8 +42,9 @@
         "6,cl,Johannisbeernektar",
         "2,cl,Blue curacao Sirup"
     ],
-    "var_background":   "#FFFFFF",
-    "var_image":        "",
-    "var_url":          "Insert URL Here",
-    "var_id":           "Card ID"
+    "var_background":       "#FFFFFF",
+    "var_image":            "",
+    "var_url":              "Insert URL Here",
+    "var_cocktail_name":    "",
+    "var_id":               "Card ID"
 }

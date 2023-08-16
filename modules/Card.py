@@ -12,6 +12,7 @@ from tqdm       import tqdm
 from io         import BytesIO
 
 from modules.Image_math import get_alpha_calculation, get_alpha_v2_calculation
+from modules.image_info import img_get_color_avg
 
 class Card:
 
@@ -233,7 +234,7 @@ class Card:
                             object[value] = self.card_img.width - int(object[value].replace('!', ''))
                         elif value in ['y', 'height']:
                             object[value] = self.card_img.height - int(object[value].replace('!', ''))
-                
+                            
         if returner:
             return object
         else:
@@ -354,8 +355,12 @@ class Card:
 
             # Filters
             if object['filter'] is not None:
-                for filter in object['filter'].split(','):
-                    match filter:
+                filters_cache = object['filter'].split(',')
+                for filter in range(len(filters_cache)):
+                    if 'filter_config' not in object or len(object['filter_config']) < (filter + 1):
+                        continue
+
+                    match filters_cache[filter]:
                         case 'sharpen':
                             new_image = new_image.filter(ImageFilter.SHARPEN)
                         case 'detail':
@@ -365,18 +370,15 @@ class Card:
                         case 'find_edges':
                             new_image = new_image.filter(ImageFilter.FIND_EDGES)
                         case 'gradient':
-                            if 'filter_config' not in object:
-                                continue
-
-                            match object['filter_config']['direction']:
+                            match object['filter_config'][filter]['direction']:
                                 case 'bottom':
                                     for x_pixel in range(new_image.size[0]):
-                                        for y_pixel in range(object['filter_config']['length']):
+                                        for y_pixel in range(object['filter_config'][filter]['length']):
                                             pixel_back  = self.card_img.getpixel((object['x'] + x_pixel, object['y'] + new_image.size[1] - y_pixel - 1))
 
                                             pixel_front = new_image.getpixel((x_pixel, new_image.size[1] - y_pixel - 1))
 
-                                            pixel_blend_ration = y_pixel / object['filter_config']['length']
+                                            pixel_blend_ration = y_pixel / object['filter_config'][filter]['length']
 
                                             pixel_blend = (
                                                 int((pixel_back[0] * (1 - pixel_blend_ration)) + (pixel_front[0] * pixel_blend_ration)),
@@ -388,6 +390,15 @@ class Card:
                                             new_image.putpixel(
                                                 (x_pixel, new_image.size[1] - y_pixel - 1),
                                                 pixel_blend)
+
+                        case 'cut':
+                            match object['filter_config'][filter]['side']:
+                                case 'top':
+                                    new_image = new_image.crop(
+                                        (0, object['filter_config'][filter]['length'], object['width'], object['height'])
+                                    )
+                                    object['height'] -= object['filter_config'][filter]['length']
+
 
 
             # Calculate anchor positions
