@@ -224,7 +224,7 @@ class Card:
                         case 'image_avg':
                             cache_image_path = function_params[1]
                             if cache_image_path[0] == '$':
-                                cache_image_path = object[cache_image_path[1:]]
+                                cache_image_path = self.card_design[cache_image_path[1:]]
                                 
                             if 'https://' in cache_image_path:
                                 cache_image = Image.open(BytesIO(requests.get(cache_image_path).content)).convert('RGBA')
@@ -235,11 +235,13 @@ class Card:
                                 
                                 cache_image = Image.open(cache_image_path)
                             
-                            cache_color_int = img_get_color_avg(cache_image)
-                            cache_color_hex = ''
+                            cache_color_int = img_get_color_avg(cache_image, 'center')
+                            cache_color_hex = '#'
                             cache_color_hex += f'{hex(cache_color_int[0])[2:]:0>2}'
                             cache_color_hex += f'{hex(cache_color_int[1])[2:]:0>2}'
                             cache_color_hex += f'{hex(cache_color_int[2])[2:]:0>2}'
+
+                            object['color'] = cache_color_hex
                 
                 else:
                     # Support old handling if string is not defined as a formula
