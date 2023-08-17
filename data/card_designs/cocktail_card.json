@@ -62,6 +62,20 @@
             "color":            "#FFFFFF",
             "font_size":        125,
             "logic":            "COPY#EMPTY#text_cocktail_shadow"
+        },
+        {
+            "type":             "text",
+            "id":               "ingredients_count",
+            "desc":             "Ingredients Count",
+            "x":                ">>w_%10",
+            "y":                ">>h_%70 + $cache_index * 60",
+            "align":            "right",
+            "anchor":           "rb",
+            "text":             "$var_ingredients#$cache_index#0",
+            "color":            "#000000",
+            "font_size":        50,
+            "font":             "Stone Serif Semibold",
+            "logic":            "FOR#$cache_index#0#LEN=$var_ingredients#1"
         }
     ],
     "var_ingredients": [

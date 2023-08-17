@@ -115,12 +115,18 @@ class Card:
                     
                     # Remove the $ to get the variable name
                     variable = cache[1][1:]
-                    
+
+                    object[variable] = 0
+
                     cacher_dict = {
                             'int_from': cache[2],
                             'int_to':   cache[3],
                         }
 
+                    if cacher_dict['int_to'][0:3] == 'LEN':
+                        cache_range = cacher_dict['int_to'].split('=')
+                        if cache_range[1][1:] in self.card_design:
+                            cacher_dict['int_to'] = len(self.card_design[cache_range[1][1:]])
                     if len(cache) > 4:
                         cacher_dict['int_steps'] = cache[4]
 
@@ -140,7 +146,7 @@ class Card:
                     for object[variable] in range(int_from, int_to, int_steps):
                         self.card_infos[variable] = object[variable]
 
-                        self.format_values(copy.copy(object))
+                        self.format_values(copy.copy(self.validate_object(object)))
                         # self.log(Fore.LIGHTMAGENTA_EX + str(object[variable]), Fore.LIGHTYELLOW_EX + str(object))
                 
                 case 'IF':
@@ -286,9 +292,15 @@ class Card:
                         elif value in ['y', 'height']:
                             object[value] = (int(object[value].replace('%', '')) / 100) * self.card_img.height
                     
-                    # Handle Variables defined by '$' at the beginning
                     if isinstance(object[value], str) and object[value][0] == '$':
-                        object[value] = self.card_design[object[value][1:]]
+                        if '#' in object[value]:
+                            cache = object[value].split('#')
+                            if len(cache) == 2:
+                                object[value] = self.card_design[cache[0][1:]][int(object[cache[1][1:]])]
+                            elif len(cache) == 3:
+                                object[value] = self.card_design[cache[0][1:]][int(object[cache[1][1:]])].split(',')[int(cache[2])]
+                        else:
+                            object[value] = self.card_design[object[value][1:]]
 
                     # Reverse Pixel Definition (Can't explain it. it Works)
                     if isinstance(object[value], str) and object[value][0] == '!':
