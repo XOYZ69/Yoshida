@@ -4,6 +4,24 @@
     "height":   1800,
     "body": [
         {
+            "type":             "rectangle",
+            "desc":             "Frame",
+            "color":            "||image_avg&$var_image",
+            "x":                0,
+            "y":                0,
+            "width":            ">>w_%100",
+            "height":           ">>h_%100"
+        },
+        {
+            "type":             "rectangle",
+            "desc":             "Background",
+            "color":            "$var_background",
+            "x":                "$var_frame_width",
+            "y":                "$var_frame_width",
+            "width":            ">>w_%100 - ( 2 * $var_frame_width )",
+            "height":           ">>h_%100 - ( 2 * $var_frame_width )"
+        },
+        {
             "type":             "image",
             "desc":             "Cocktail Display Image",
             "id":               "image_cocktail",
@@ -32,7 +50,9 @@
             "align":            "center",
             "anchor":           "mm",
             "text":             "$var_cocktail_name",
-            "color":            "#FFFFFF"
+            "color":            "#FFFFFF",
+            "font_size":        125,
+            "font":             "Stone Serif Semibold"
         }
     ],
     "var_ingredients": [
@@ -42,7 +62,8 @@
         "6,cl,Johannisbeernektar",
         "2,cl,Blue curacao Sirup"
     ],
-    "var_background":       "#FFFFFF",
+    "var_background":       "#000000",
+    "var_frame_width":      25,
     "var_image":            "",
     "var_url":              "Insert URL Here",
     "var_cocktail_name":    "",

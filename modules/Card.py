@@ -214,6 +214,33 @@ class Card:
                     object[value] = cache_out
 
                     self.log(Fore.LIGHTRED_EX + '<< ' + Fore.LIGHTMAGENTA_EX + str(object[value]) + Fore.RESET)
+                
+                # Advanced Functions
+                elif object[value][0:2] == '||':
+                    
+                    function_params = object[value][2:].split('&')
+
+                    match function_params[0]:
+                        case 'image_avg':
+                            cache_image_path = function_params[1]
+                            if cache_image_path[0] == '$':
+                                cache_image_path = object[cache_image_path[1:]]
+                                
+                            if 'https://' in cache_image_path:
+                                cache_image = Image.open(BytesIO(requests.get(cache_image_path).content)).convert('RGBA')
+                            else:
+                                if not os.path.exists(cache_image_path):
+                                    # Correct the image_path to the default
+                                    cache_image_path = self.template['var_image']
+                                
+                                cache_image = Image.open(cache_image_path)
+                            
+                            cache_color_int = img_get_color_avg(cache_image)
+                            cache_color_hex = ''
+                            cache_color_hex += f'{hex(cache_color_int[0])[2:]:0>2}'
+                            cache_color_hex += f'{hex(cache_color_int[1])[2:]:0>2}'
+                            cache_color_hex += f'{hex(cache_color_int[2])[2:]:0>2}'
+                
                 else:
                     # Support old handling if string is not defined as a formula
 

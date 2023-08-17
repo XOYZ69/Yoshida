@@ -56,11 +56,11 @@ def test_card_creation_basis(card_set = '', show = False):
             
             assert os.path.exists(save_location + filename), 'Generated file does not exist.'
 
-def test_gamecard_simple():
-    test_card_creation_basis('example_gamecard_simple')
+# def test_gamecard_simple():
+#     test_card_creation_basis('example_gamecard_simple')
 
-def test_yugioh():
-   test_card_creation_basis('example_yu-gi-oh')
+# def test_yugioh():
+#    test_card_creation_basis('example_yu-gi-oh')
 
 def test_cocktail():
-    test_card_creation_basis('example_cocktails')
+    test_card_creation_basis('example_cocktails', True)

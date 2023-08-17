@@ -19,3 +19,5 @@ def img_get_color_avg(image_param):
         sum_pixel[1] / pixel_sum,
         sum_pixel[2] / pixel_sum
     ]
+
+    return sum_pixel
