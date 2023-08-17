@@ -84,6 +84,9 @@ class Card:
     def validate_object(self, object_cache):
         object = object_cache
 
+        if 'logic' in object and object['logic'] != '':
+            return object
+
         # Check Templates for missing parameters
         if object['type'] + '.json' in os.listdir(self.folders['template']):
             with open(self.folders['template'] + '/' + object['type'] + '.json', 'r', encoding='utf-8') as file:
@@ -104,6 +107,7 @@ class Card:
             self.format_values(object)
         else:
             cache = object['logic'].split('#')
+            object.pop('logic')
 
             match cache[0]:
                 case 'FOR':
@@ -149,8 +153,34 @@ class Card:
                         cache_var = cache[2][1:].split(' == ')
                         if eval("'" + self.card_design[cache_var[0]] + "' == " + cache_var[1]) == True:
                             self.format_values(copy.copy(object))
+                
+                case 'COPY':
+                    
+                    copy_from_id = self.get_object_from_id(cache[2])
+                    copy_from_id.pop('id')
+                    
+                    if cache[1] == 'EMPTY':
+                        for parameter in copy_from_id:
+                            if parameter not in object:
+                                object[parameter] = copy_from_id[parameter]
+                    elif cache[1] == 'ALL':
+                        for parameter in copy_from_id:
+                            object[parameter] = copy_from_id[parameter]
+                    
+                    print(object)
+                    print(copy_from_id)
+
+                    self.format_values(copy.copy(object))
+
                 case other:
                     self.format_values(copy.copy(object))
+
+    def get_object_from_id(self, object_id):
+        for object in self.card_design['body']:
+            if 'id' in object and object['id'] == object_id:
+                return object
+        
+        return None
 
     def format_values(self, object, returner = False):
         

@@ -58,14 +58,9 @@
         {
             "type":             "text",
             "desc":             "Cocktail Name",
-            "x":                ">>w_%50",
             "y":                ">>h_%60",
-            "align":            "center",
-            "anchor":           "mm",
-            "text":             "$var_cocktail_name",
             "color":            "#FFFFFF",
             "font_size":        125,
-            "font":             "Stone Serif Semibold",
             "logic":            "COPY#EMPTY#text_cocktail_shadow"
         }
     ],
