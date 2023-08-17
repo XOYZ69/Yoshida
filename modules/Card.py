@@ -105,49 +105,52 @@ class Card:
         else:
             cache = object['logic'].split('#')
 
-            if cache[0] == 'FOR':
-                # Syntax: 'FOR#$var_name#int_from#int_to[#int_steps]'
-                
-                # Remove the $ to get the variable name
-                variable = cache[1][1:]
-                
-                cacher_dict = {
-                        'int_from': cache[2],
-                        'int_to':   cache[3],
-                    }
+            match cache[0]:
+                case 'FOR':
+                    # Syntax: 'FOR#$var_name#int_from#int_to[#int_steps]'
+                    
+                    # Remove the $ to get the variable name
+                    variable = cache[1][1:]
+                    
+                    cacher_dict = {
+                            'int_from': cache[2],
+                            'int_to':   cache[3],
+                        }
 
-                if len(cache) > 4:
-                    cacher_dict['int_steps'] = cache[4]
+                    if len(cache) > 4:
+                        cacher_dict['int_steps'] = cache[4]
 
-                cache_d = self.format_values(
-                    cacher_dict,
-                    returner = True
-                )
+                    cache_d = self.format_values(
+                        cacher_dict,
+                        returner = True
+                    )
 
-                int_from  = int(cache_d['int_from'])
-                int_to    = int(cache_d['int_to'])
+                    int_from  = int(cache_d['int_from'])
+                    int_to    = int(cache_d['int_to'])
 
-                if len(cache) > 4:
-                    int_steps = int(cache_d['int_steps'])
-                else:
-                    int_steps = 1
+                    if len(cache) > 4:
+                        int_steps = int(cache_d['int_steps'])
+                    else:
+                        int_steps = 1
 
-                for object[variable] in range(int_from, int_to, int_steps):
-                    self.card_infos[variable] = object[variable]
+                    for object[variable] in range(int_from, int_to, int_steps):
+                        self.card_infos[variable] = object[variable]
 
-                    self.format_values(copy.copy(object))
-                    # self.log(Fore.LIGHTMAGENTA_EX + str(object[variable]), Fore.LIGHTYELLOW_EX + str(object))
-            
-            elif cache[0] == 'IF':
-                pass
-
-            elif cache[0] == 'VISIBILITY':
-                if cache[1] in ['TRUE', 'true', '1', 'yes', 'YES', 'y']:
-                    self.format_values(copy.copy(object))
-                elif cache[1] == 'IF':
-                    cache_var = cache[2][1:].split(' == ')
-                    if eval("'" + self.card_design[cache_var[0]] + "' == " + cache_var[1]) == True:
                         self.format_values(copy.copy(object))
+                        # self.log(Fore.LIGHTMAGENTA_EX + str(object[variable]), Fore.LIGHTYELLOW_EX + str(object))
+                
+                case 'IF':
+                    pass
+
+                case 'VISIBILITY':
+                    if cache[1] in ['TRUE', 'true', '1', 'yes', 'YES', 'y']:
+                        self.format_values(copy.copy(object))
+                    elif cache[1] == 'IF':
+                        cache_var = cache[2][1:].split(' == ')
+                        if eval("'" + self.card_design[cache_var[0]] + "' == " + cache_var[1]) == True:
+                            self.format_values(copy.copy(object))
+                case other:
+                    self.format_values(copy.copy(object))
 
     def format_values(self, object, returner = False):
         

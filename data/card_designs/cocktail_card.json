@@ -65,7 +65,8 @@
             "text":             "$var_cocktail_name",
             "color":            "#FFFFFF",
             "font_size":        125,
-            "font":             "Stone Serif Semibold"
+            "font":             "Stone Serif Semibold",
+            "logic":            "COPY#EMPTY#text_cocktail_shadow"
         }
     ],
     "var_ingredients": [
