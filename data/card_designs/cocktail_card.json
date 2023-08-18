@@ -65,17 +65,66 @@
         },
         {
             "type":             "text",
-            "id":               "ingredients_count",
             "desc":             "Ingredients Count",
             "x":                ">>w_%10",
-            "y":                ">>h_%70 + $cache_index * 60",
+            "y":                ">>h_%70 + $cache_index * $var_ingridients_space",
             "align":            "right",
             "anchor":           "rb",
             "text":             "$var_ingredients#$cache_index#0",
-            "color":            "#000000",
+            "color":            "#FFFFFF",
             "font_size":        50,
             "font":             "Stone Serif Semibold",
             "logic":            "FOR#$cache_index#0#LEN=$var_ingredients#1"
+        },
+        {
+            "type":             "text",
+            "desc":             "Ingredients Unit",
+            "x":                ">>w_%10",
+            "y":                ">>h_%70 + $cache_index * $var_ingridients_space",
+            "align":            "left",
+            "anchor":           "lb",
+            "text":             "$var_ingredients#$cache_index#1",
+            "color":            "#FFFFFF",
+            "font_size":        50,
+            "font":             "Stone Serif Semibold",
+            "logic":            "FOR#$cache_index#0#LEN=$var_ingredients#1"
+        },
+        {
+            "type":             "text",
+            "desc":             "Ingredients Type",
+            "x":                ">>w_%15",
+            "y":                ">>h_%69 + $cache_index * $var_ingridients_space",
+            "align":            "left",
+            "anchor":           "lm",
+            "text":             "$var_ingredients#$cache_index#2",
+            "color":            "#FFFFFF",
+            "font_size":        50,
+            "font":             "Stone Serif Semibold",
+            "logic":            "FOR#$cache_index#0#LEN=$var_ingredients#1"
+        },
+        {
+            "type":             "text",
+            "desc":             "Percentage VOL",
+            "x":                ">>w_%95",
+            "y":                ">>h_%91",
+            "align":            "left",
+            "anchor":           "rm",
+            "text":             "$var_total_liter",
+            "color":            "#FFFFFF",
+            "font_size":        50,
+            "font":             "Stone Serif Semibold"
+        },
+        {
+            "type":             "text",
+            "desc":             "Percentage VOL",
+            "x":                ">>w_%95",
+            "y":                ">>h_%95",
+            "align":            "left",
+            "anchor":           "rm",
+            "text":             "$var_vol_percentage",
+            "color":            "#FFFFFF",
+            "font_size":        50,
+            "font":             "Stone Serif Semibold"
         }
     ],
     "var_ingredients": [
@@ -90,5 +139,8 @@
     "var_image":            "",
     "var_url":              "Insert URL Here",
     "var_cocktail_name":    "",
-    "var_id":               "Card ID"
+    "var_id":               "Card ID",
+    "var_ingridients_space":70,
+    "var_vol_percentage":   "5,5%",
+    "var_total_liter":      "170ml"
 }
