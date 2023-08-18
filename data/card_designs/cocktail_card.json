@@ -66,7 +66,7 @@
         {
             "type":             "text",
             "desc":             "Ingredients Count",
-            "x":                ">>w_%10",
+            "x":                ">>w_%12",
             "y":                ">>h_%70 + $cache_index * $var_ingridients_space",
             "align":            "right",
             "anchor":           "rb",
@@ -79,7 +79,7 @@
         {
             "type":             "text",
             "desc":             "Ingredients Unit",
-            "x":                ">>w_%10",
+            "x":                ">>w_%12",
             "y":                ">>h_%70 + $cache_index * $var_ingridients_space",
             "align":            "left",
             "anchor":           "lb",
@@ -92,7 +92,7 @@
         {
             "type":             "text",
             "desc":             "Ingredients Type",
-            "x":                ">>w_%15",
+            "x":                ">>w_%17",
             "y":                ">>h_%69 + $cache_index * $var_ingridients_space",
             "align":            "left",
             "anchor":           "lm",
