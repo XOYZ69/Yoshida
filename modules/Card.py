@@ -303,7 +303,7 @@ class Card:
                             object[value] = self.card_design[object[value][1:]]
 
                     # Reverse Pixel Definition (Can't explain it. it Works)
-                    if isinstance(object[value], str) and object[value][0] == '!':
+                    if isinstance(object[value], str) and len(object[value]) > 0 and object[value][0] == '!':
                         if value in ['x', 'width']:
                             object[value] = self.card_img.width - int(object[value].replace('!', ''))
                         elif value in ['y', 'height']:
