@@ -104,7 +104,7 @@
         },
         {
             "type":             "text",
-            "desc":             "Percentage VOL",
+            "desc":             "Total Volume",
             "x":                ">>w_%95",
             "y":                ">>h_%91",
             "align":            "left",
@@ -122,6 +122,18 @@
             "align":            "left",
             "anchor":           "rm",
             "text":             "$var_vol_percentage",
+            "color":            "#FFFFFF",
+            "font_size":        50,
+            "font":             "Stone Serif Semibold"
+        },
+        {
+            "type":             "text",
+            "desc":             "Card ID",
+            "x":                ">>w_%5",
+            "y":                ">>h_%95",
+            "align":            "left",
+            "anchor":           "lm",
+            "text":             "$var_id",
             "color":            "#FFFFFF",
             "font_size":        50,
             "font":             "Stone Serif Semibold"
