@@ -319,6 +319,8 @@ class Card:
 
         self.log(Fore.CYAN + 'Placing [' + object['type'] + ']' + Fore.RESET)
 
+        object = self.validate_object(object)
+
         # Draw Rectangles
         if object['type'] == 'rectangle':
             self.card_img_draw.rounded_rectangle(
