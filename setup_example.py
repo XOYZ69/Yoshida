@@ -33,11 +33,12 @@ def test_card_creation_basis(card_set = '', show = False):
     with open(json_file, 'r', encoding = 'utf-8') as example:
         example_json = json.loads(example.read())
 
-        cards.append(Card(example_json['design']))
-
         card_count = 0
 
         for card in example_json['cards']:
+            
+            cards.append(Card(example_json['design']))
+
             cards[-1].create(card)
 
             card_count += 1

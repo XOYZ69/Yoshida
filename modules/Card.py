@@ -84,6 +84,9 @@ class Card:
     def validate_object(self, object_cache):
         object = object_cache
 
+        if 'logic' in object and object['logic'] != '':
+            return object
+
         # Check Templates for missing parameters
         if object['type'] + '.json' in os.listdir(self.folders['template']):
             with open(self.folders['template'] + '/' + object['type'] + '.json', 'r', encoding='utf-8') as file:
@@ -104,50 +107,86 @@ class Card:
             self.format_values(object)
         else:
             cache = object['logic'].split('#')
+            object.pop('logic')
 
-            if cache[0] == 'FOR':
-                # Syntax: 'FOR#$var_name#int_from#int_to[#int_steps]'
+            match cache[0]:
+                case 'FOR':
+                    # Syntax: 'FOR#$var_name#int_from#int_to[#int_steps]'
+                    
+                    # Remove the $ to get the variable name
+                    variable = cache[1][1:]
+
+                    object[variable] = 0
+
+                    cacher_dict = {
+                            'int_from': cache[2],
+                            'int_to':   cache[3],
+                        }
+
+                    if cacher_dict['int_to'][0:3] == 'LEN':
+                        cache_range = cacher_dict['int_to'].split('=')
+                        if cache_range[1][1:] in self.card_design:
+                            cacher_dict['int_to'] = len(self.card_design[cache_range[1][1:]])
+                    if len(cache) > 4:
+                        cacher_dict['int_steps'] = cache[4]
+
+                    cache_d = self.format_values(
+                        cacher_dict,
+                        returner = True
+                    )
+
+                    int_from  = int(cache_d['int_from'])
+                    int_to    = int(cache_d['int_to'])
+
+                    if len(cache) > 4:
+                        int_steps = int(cache_d['int_steps'])
+                    else:
+                        int_steps = 1
+
+                    for object[variable] in range(int_from, int_to, int_steps):
+                        self.card_infos[variable] = object[variable]
+
+                        self.format_values(copy.copy(self.validate_object(object)))
+                        # self.log(Fore.LIGHTMAGENTA_EX + str(object[variable]), Fore.LIGHTYELLOW_EX + str(object))
                 
-                # Remove the $ to get the variable name
-                variable = cache[1][1:]
-                
-                cacher_dict = {
-                        'int_from': cache[2],
-                        'int_to':   cache[3],
-                    }
+                case 'IF':
+                    pass
 
-                if len(cache) > 4:
-                    cacher_dict['int_steps'] = cache[4]
-
-                cache_d = self.format_values(
-                    cacher_dict,
-                    returner = True
-                )
-
-                int_from  = int(cache_d['int_from'])
-                int_to    = int(cache_d['int_to'])
-
-                if len(cache) > 4:
-                    int_steps = int(cache_d['int_steps'])
-                else:
-                    int_steps = 1
-
-                for object[variable] in range(int_from, int_to, int_steps):
-                    self.card_infos[variable] = object[variable]
-
-                    self.format_values(copy.copy(object))
-                    # self.log(Fore.LIGHTMAGENTA_EX + str(object[variable]), Fore.LIGHTYELLOW_EX + str(object))
-            
-            elif cache[0] == 'IF':
-                pass
-
-            elif cache[0] == 'VISIBILITY':
-                if cache[1] in ['TRUE', 'true', '1', 'yes', 'YES', 'y']:
-                    self.format_values(copy.copy(object))
-                elif cache[1] == 'IF':
-                    cache_var = cache[2][1:].split(' == ')
-                    if eval("'" + self.card_design[cache_var[0]] + "' == " + cache_var[1]) == True:
+                case 'VISIBILITY':
+                    if cache[1] in ['TRUE', 'true', '1', 'yes', 'YES', 'y']:
                         self.format_values(copy.copy(object))
+                    elif cache[1] == 'IF':
+                        cache_var = cache[2][1:].split(' == ')
+                        if eval("'" + self.card_design[cache_var[0]] + "' == " + cache_var[1]) == True:
+                            self.format_values(copy.copy(object))
+                
+                case 'COPY':
+                    
+                    copy_from_id = self.get_object_from_id(cache[2])
+                    copy_from_id.pop('id')
+                    
+                    if cache[1] == 'EMPTY':
+                        for parameter in copy_from_id:
+                            if parameter not in object:
+                                object[parameter] = copy_from_id[parameter]
+                    elif cache[1] == 'ALL':
+                        for parameter in copy_from_id:
+                            object[parameter] = copy_from_id[parameter]
+                    
+                    print(object)
+                    print(copy_from_id)
+
+                    self.format_values(copy.copy(object))
+
+                case other:
+                    self.format_values(copy.copy(object))
+
+    def get_object_from_id(self, object_id):
+        for object in self.card_design['body']:
+            if 'id' in object and object['id'] == object_id:
+                return object
+        
+        return None
 
     def format_values(self, object, returner = False):
         
@@ -214,6 +253,35 @@ class Card:
                     object[value] = cache_out
 
                     self.log(Fore.LIGHTRED_EX + '<< ' + Fore.LIGHTMAGENTA_EX + str(object[value]) + Fore.RESET)
+                
+                # Advanced Functions
+                elif object[value][0:2] == '||':
+                    
+                    function_params = object[value][2:].split('&')
+
+                    match function_params[0]:
+                        case 'image_avg':
+                            cache_image_path = function_params[1]
+                            if cache_image_path[0] == '$':
+                                cache_image_path = self.card_design[cache_image_path[1:]]
+                                
+                            if 'https://' in cache_image_path:
+                                cache_image = Image.open(BytesIO(requests.get(cache_image_path).content)).convert('RGBA')
+                            else:
+                                if not os.path.exists(cache_image_path):
+                                    # Correct the image_path to the default
+                                    cache_image_path = self.template['var_image']
+                                
+                                cache_image = Image.open(cache_image_path)
+                            
+                            cache_color_int = img_get_color_avg(cache_image, 'center')
+                            cache_color_hex = '#'
+                            cache_color_hex += f'{hex(cache_color_int[0])[2:]:0>2}'
+                            cache_color_hex += f'{hex(cache_color_int[1])[2:]:0>2}'
+                            cache_color_hex += f'{hex(cache_color_int[2])[2:]:0>2}'
+
+                            object['color'] = cache_color_hex
+                
                 else:
                     # Support old handling if string is not defined as a formula
 
@@ -224,12 +292,18 @@ class Card:
                         elif value in ['y', 'height']:
                             object[value] = (int(object[value].replace('%', '')) / 100) * self.card_img.height
                     
-                    # Handle Variables defined by '$' at the beginning
                     if isinstance(object[value], str) and object[value][0] == '$':
-                        object[value] = self.card_design[object[value][1:]]
+                        if '#' in object[value]:
+                            cache = object[value].split('#')
+                            if len(cache) == 2:
+                                object[value] = self.card_design[cache[0][1:]][int(object[cache[1][1:]])]
+                            elif len(cache) == 3:
+                                object[value] = self.card_design[cache[0][1:]][int(object[cache[1][1:]])].split(',')[int(cache[2])]
+                        else:
+                            object[value] = self.card_design[object[value][1:]]
 
                     # Reverse Pixel Definition (Can't explain it. it Works)
-                    if isinstance(object[value], str) and object[value][0] == '!':
+                    if isinstance(object[value], str) and len(object[value]) > 0 and object[value][0] == '!':
                         if value in ['x', 'width']:
                             object[value] = self.card_img.width - int(object[value].replace('!', ''))
                         elif value in ['y', 'height']:
@@ -244,6 +318,8 @@ class Card:
     def place_object(self, object):
 
         self.log(Fore.CYAN + 'Placing [' + object['type'] + ']' + Fore.RESET)
+
+        object = self.validate_object(object)
 
         # Draw Rectangles
         if object['type'] == 'rectangle':
