@@ -81,6 +81,42 @@
             "var_image":            "https://kaufland.media.schwarz/is/image/schwarz/recipe2525682_whisky_sour_saft_cocktail_drink?JGstbGVnYWN5LW9uc2l0ZS0zJA==",
             "var_url":              "https://filiale.kaufland.de/rezepte/rezeptsuche/rezept.whisky-sour.r_id=Recipe_2525682.html",
             "var_id":               "005"
+        },
+        {
+            "var_cocktail_name":    "Blue Hawaii",
+            "var_ingredients": [
+                "2,cl,Vodka,37.5%",
+                "2,cl,Weißer Rum,40%",
+                "1.5,cl,Blue Curacao,21%",
+                "9,cl,Ananassaft",
+                "1.5,cl,Limettensaft",
+                "1.5,cl,Zuckersirup"
+            ],
+            "var_vol_percentage":   "8,9%",
+            "var_total_liter":      "175ml",
+            "var_background":       "#02be97",
+            "var_image":            "https://cocktailbart.de/wp-content/uploads/2021/05/Blue-Hawaii-Cocktail-990x990.jpg.webp",
+            "var_url":              "https://cocktailbart.de/cocktails/cocktails-mit-rum/blue-hawaii/",
+            "var_id":               "006"
+        }
+        ,
+        {
+            "var_cocktail_name":    "Hurricane",
+            "var_ingredients": [
+                "6,cl,Dunkler Rum,40%",
+                "6,cl,Weißer Rum,40%",
+                "6,cl,Maracujanektar",
+                "3,cl,Orangensaft",
+                "1.5,cl,Grenadine",
+                "3,cl,Limettensaft",
+                "1.5,cl,Zuckersirup"
+            ],
+            "var_vol_percentage":   "17.7%",
+            "var_total_liter":      "270ml",
+            "var_background":       "#eb2a0a",
+            "var_image":            "https://cocktailbart.de/wp-content/uploads/2020/03/Hurricane-Cocktail-Rezept-990x792.png.webp",
+            "var_url":              "https://cocktailbart.de/cocktails/cocktails-mit-rum/hurricane-cocktail/",
+            "var_id":               "007"
         }
     ]
 }

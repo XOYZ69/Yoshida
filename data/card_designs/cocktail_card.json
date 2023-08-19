@@ -135,7 +135,7 @@
             "anchor":           "lm",
             "text":             "$var_id",
             "color":            "#FFFFFF",
-            "font_size":        50,
+            "font_size":        30,
             "font":             "Stone Serif Semibold"
         }
     ],

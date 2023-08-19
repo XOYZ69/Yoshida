@@ -173,9 +173,6 @@ class Card:
                         for parameter in copy_from_id:
                             object[parameter] = copy_from_id[parameter]
                     
-                    print(object)
-                    print(copy_from_id)
-
                     self.format_values(copy.copy(object))
 
                 case other:
