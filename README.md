@@ -26,7 +26,7 @@ With that said until Version 1.0 is released this program should be used with th
 
 ## Setup
 
-1. Clone the repo or download the newest release from the [release page](github.com/XOYZ69/Yoshida/releases).
+1. Clone the repo or download the newest release from the [release page](https://github.com/XOYZ69/Yoshida/releases).
 
     ```
     gh repo clone XOYZ69/Yoshida
