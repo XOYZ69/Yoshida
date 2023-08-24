@@ -22,4 +22,25 @@ With that said until Version 1.0 is released this program should be used with th
 
 [![Unit Test Designs](https://github.com/XOYZ69/Yoshida/actions/workflows/unit_test_designs.yml/badge.svg)](https://github.com/XOYZ69/Yoshida/actions/workflows/unit_test_designs.yml)
 
+
+
+## Setup
+
+1. Clone the repo or download the newest release from the [release page](github.com/XOYZ69/Yoshida/releases).
+
+    ```
+    gh repo clone XOYZ69/Yoshida
+    ```
+
+2. Create your own card design (wiki entries will follow) or use an exisiting one in the folder ```data/card_designs```.
+
+3. Add a new card set in `data/card_sets` for your card design or use an existing one.
+
+4. Edit the `setup_example.py` to include ` test_card_creation_basis(card_set = your_card_set, show = False)`
+    -  `card_set` is the name of your card set
+    - `show` is a boolean defining if you want to open your exported card instantly or only save it in the `data/output` folder.
+
+5. Call your function from the file and run it with `python setup_example.py` or simply call `pytest -rA setup_example.py` to run all tests.
+
+
 ---
