@@ -1,4 +1,4 @@
-# Yoshida v0.3.1
+# Yoshida
 
 **⚠️ This description is due to time restraints not up to date! ⚠️**
 
@@ -8,30 +8,18 @@ Yoshida is "Card Maker Software" for dynamically creating cards for anything. De
 
 ---
 
-## Usable Parameters for x/y/height/width
+### Stability information
 
-For example usage look in "data/card_designs/gamecard_simple.json".
+The newest release of Yoshida always supports everything used in the example [designs](https://github.com/XOYZ69/Yoshida/tree/master/data/card_designs) and [sets](https://github.com/XOYZ69/Yoshida/tree/master/data/card_sets) since they are getting tested with every commit.
+If anything does not work please check if there are any new versions out or create a [new issue](https://github.com/XOYZ69/Yoshida/issues/new/choose).
 
-- int
-    - the basic format to tell the dimensions in pixel
-- percentage
-    - "95%"
-    - use a string to define percentage which will be calculated from the given height and width
-- reverse
-    - "!50"
-    - use an "!" to subtract from the height or width.
-    - if your object is positionied at [x: 0] and [y: 0] while your image has a width of 400, the formula "!50" will make the object 400 - 50 = 350 pixel wide
+With that said until Version 1.0 is released this program should be used with these things in mind.
 
-Since v0.2.1-alpha you can even use the '&' parameter at the beginning to activate the formula function. Make a space after every value. Even if it's just a bracket.
+[![Current Yoshida Version](https://img.shields.io/github/v/release/XOYZ69/Yoshida.svg?sort=semver)](https://github.com/XOYZ69/Yoshida/releases/latest)
+[![Version 1.0 Release Progress](https://img.shields.io/github/milestones/progress-percent/XOYZ69/Yoshida/1)](https://github.com/XOYZ69/Yoshida/milestone/1)
 
----
+[![Minimum Python Version](https://img.shields.io/badge/Required_python_version-3.10_+-blue.svg)](https://www.python.org/downloads/release/python-3100/)
 
-## Blend Modes
-
-### - Basic
-- Simply copy / paste the new image over the old
-
-### - Substract
-- Substract the image from the pixels benath it
+[![Unit Test Designs](https://github.com/XOYZ69/Yoshida/actions/workflows/unit_test_designs.yml/badge.svg)](https://github.com/XOYZ69/Yoshida/actions/workflows/unit_test_designs.yml)
 
 ---
