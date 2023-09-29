@@ -25,19 +25,35 @@ class Card:
 
     card_design = None
 
-    folders = {
-        'template':     true_path + 'data/object_templates/',
-        'card_designs': true_path + 'data/card_designs/',
-        'fonts':        true_path + 'data/fonts/'
-    }
+    config = None
 
     debug_level = 5
 
     def __init__(self, design) -> None:
+        self.config_load()
+
+        if self.config is None:
+            return
+
+        self.folders = {
+            'template':     self.true_path + self.config['yoshida_folder_structure']['templates'],
+            'card_designs': self.true_path + self.config['yoshida_folder_structure']['card_designs'],
+            'fonts':        self.true_path + self.config['yoshida_folder_structure']['fonts']
+        }
+
         self.design_load(design)
 
         if 'var_border_width' not in self.card_design:
             self.card_design['var_border_width'] = 0
+    
+    def config_load(self):
+        config_file_path = 'data/settings/system.config.json'
+
+        if not os.path.exists(config_file_path):
+            assert FileNotFoundError('The config file "{file}" was not found. Please load the basic config file from github.'.format(file = config_file_path))
+        
+        with open(config_file_path, 'r', encoding = 'utf-8') as cf:
+            self.config = json.loads(cf.read())
 
     def design_load(self, design_name):
         # If design is not in design folder exit here
@@ -486,6 +502,18 @@ class Card:
                 ),
                 object['anchor']
             )
+
+            if new_xy[0] + object['width'] > self.card_design['width']:
+                if self.config['object_move_pixel_to_range']:
+                    new_xy = (new_xy[0] - ((new_xy[0] + object['width']) - self.card_design['width']), new_xy[1])
+                else:
+                    object['width'] -= (new_xy[0] + object['width']) - self.card_design['width']
+
+            if new_xy[1] + object['height'] > self.card_design['height']:
+                if self.config['object_move_pixel_to_range']:
+                    new_xy = (new_xy[0], new_xy[1] - ((new_xy[1] + object['height']) - self.card_design['height']))
+                else:
+                    object['height'] -= (new_xy[1] + object['height']) - self.card_design['height']
 
             for img_h in tqdm(range(int(object['height'])), desc='Placing Image [' + object['desc'] + ']'):
                 for img_w in range(int(object['width'])):
