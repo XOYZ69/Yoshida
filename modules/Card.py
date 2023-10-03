@@ -4,6 +4,7 @@ import copy
 import string
 import textwrap
 import requests
+import time
 
 from PIL        import Image, ImageDraw, ImageFont, ImageFilter
 from colorama   import Fore
@@ -295,6 +296,12 @@ class Card:
 
                             object['color'] = cache_color_hex
                 
+                # System Variables
+                elif object[value][0:1] == ';':
+                    match object[value][1:]:
+                        case 'date_today':
+                            object[value] = time.ctime()
+
                 else:
                     # Support old handling if string is not defined as a formula
 
