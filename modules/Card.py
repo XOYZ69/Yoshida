@@ -222,12 +222,7 @@ class Card:
                         if item[0] == '§':
                             cache_linked_object_id  = item[1:].split(':')[0]
                             cache_linked_object_var = item[1:].split(':')[1]
-                            cache_linked_object = None
-
-                            for obj in self.card_design['body']:
-                                print(obj)
-                                if 'id' in obj and obj['id'] == cache_linked_object_id:
-                                    cache_linked_object = obj
+                            cache_linked_object = self.get_object_from_id(cache_linked_object_id)
                             
                             if cache_linked_object is None or cache_linked_object_var not in cache_linked_object:
                                 self.log('§{id} is undefined'.format(id = cache_linked_object_id))
