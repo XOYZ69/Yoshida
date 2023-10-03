@@ -218,6 +218,22 @@ class Card:
                         # Handle Variables defined by '$'
                         if item[0] == '$':
                             cache_item = str(self.card_design[item[1:]]) + ' '
+                        
+                        if item[0] == '§':
+                            cache_linked_object_id  = item[1:].split(':')[0]
+                            cache_linked_object_var = item[1:].split(':')[1]
+                            cache_linked_object = None
+
+                            for obj in self.card_design['body']:
+                                print(obj)
+                                if 'id' in obj and obj['id'] == cache_linked_object_id:
+                                    cache_linked_object = obj
+                            
+                            if cache_linked_object is None or cache_linked_object_var not in cache_linked_object:
+                                self.log('§{id} is undefined'.format(id = cache_linked_object_id))
+                                cache_item = 0
+                            else:
+                                cache_item = cache_linked_object[cache_linked_object_var]
 
                         # Check if the percentage is from wdith or height
                         if item[-1] == '%':
