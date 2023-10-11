@@ -1,0 +1,17 @@
+{
+    "setname":  "billiard_drill",
+    "width":    1000,
+    "height":   1850,
+    "body": [
+        {
+            "type":         "image",
+            "x":            ">>w_%50",
+            "y":            ">>h_%50",
+            "width":        1080,
+            "height":       1920,
+            "anchor":       "mm",
+            "image_path":   "data/assets/billiard/snooker-table-top-view.png"
+        }
+    ],
+    "var_id":       "00000000"
+}

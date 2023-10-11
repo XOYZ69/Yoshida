@@ -1,0 +1,9 @@
+{
+    "design":   "billiard_drill",
+    "setname":  "Test Billiard Drill Cards",
+    "cards": [
+        {
+            "var_id":       "00000001"
+        }
+    ]
+}
