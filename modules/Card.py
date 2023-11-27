@@ -12,6 +12,7 @@ from numpy      import int_, var
 from tqdm       import tqdm
 from io         import BytesIO
 
+from modules.Error      import Error
 from modules.Image_math import get_alpha_calculation, get_alpha_v2_calculation
 from modules.image_info import img_get_color_avg
 
@@ -57,6 +58,9 @@ class Card:
             self.config = json.loads(cf.read())
 
     def design_load(self, design_name):
+        
+        self.design_name = design_name
+        
         # If design is not in design folder exit here
         if design_name + '.json' not in os.listdir('data/card_designs'):
             return None
@@ -68,6 +72,16 @@ class Card:
 
     def create(self, card_infos=None):
         self.card_infos = self.card_design
+
+        # If a parameter is defined in a card but is not found in the card design there should be a warning displayed to the user
+        for param in card_infos:
+            if param not in self.card_design:
+                self.log(Error.ParamNotFoundError.format(
+                    param_x     = param,
+                    card_id     = 0,
+                    card_set    = self.card_design['setname'],
+                    card_design = self.design_name
+                ), 5)
 
         # Insert given information
         if card_infos != None:
@@ -743,5 +757,5 @@ class Card:
 
     
     def log(self, text, debug_level = 0):
-        if debug_level > self.debug_level:
+        if debug_level >= self.debug_level:
             print('Log:', text)
